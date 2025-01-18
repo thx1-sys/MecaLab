@@ -1,0 +1,46 @@
+.cart-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 50;
+}
+
+.cart-modal-container {
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  max-height: 90%;
+}
+
+.cart-modal-close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.material-info img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.cart-info ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.cart-info li {
+  margin-bottom: 10px;
+}

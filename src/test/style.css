@@ -1,0 +1,78 @@
+/* Reset Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  overflow: hidden;
+  font-family: "Arial", sans-serif;
+  background-color: #0b192c;
+  color: white;
+}
+
+/* Blurred Animated Shapes */
+.shapes {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  overflow: hidden;
+  border: 2px solid white; /* Optional: to visualize the container */
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  animation: float 15s infinite ease-in-out,
+    changeOpacity 5s infinite ease-in-out;
+  background: rgba(42, 57, 144, 0.1);
+}
+
+/* Animation for Floating Shapes */
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  50% {
+    transform: translateY(var(--translateY)) translateX(var(--translateX))
+      scale(1.2);
+  }
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+  }
+}
+
+/* Animation for Changing Opacity */
+@keyframes changeOpacity {
+  0%,
+  100% {
+    opacity: var(--startOpacity);
+  }
+  50% {
+    opacity: var(--endOpacity);
+  }
+}
+
+/* Content Section */
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 48px;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+}
+
+p {
+  font-size: 24px;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+}
