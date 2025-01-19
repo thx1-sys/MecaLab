@@ -50,7 +50,7 @@ const HomePage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2, duration: 0.5 }}
             >
-              <button className="mt-4 text-base lg:text-xl py-2 px-4 rounded-lg underline text-white hover:bg-white hover:text-black hover:scale-105 transform transition-all duration-500 ease-in-out btn-shadow-white hover:no-underline">
+              <button className="mt-4 text-base lg:text-xl py-2 hover:px-4 rounded-lg underline text-white hover:bg-white hover:text-black hover:scale-105 transform transition-all duration-500 ease-in-out btn-shadow-white hover:no-underline">
                 Realiza tu primera solicitud ahora
               </button>
             </motion.div>

@@ -21,3 +21,7 @@ body {
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: 4px;
 }
+
+.btn-change-blue:hover {
+  box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.8);
+}

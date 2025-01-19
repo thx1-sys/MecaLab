@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 import MecaLabIcon from "../svg/MecaLabIconDark";
 import InputField from "../Input/InputField";
 import PasswordInputField from "../Input/PasswordInputField";
 import ImageITD from "../../assets/Img/ITD_Logo.PNG";
 import IconSquareCheck from "./Icon/IconSquareCheck";
+import Loading from "../Loader/Loading";
+import Alert from "../Alert/Alert";
 
 function ForgotPassword({ onBack }) {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -16,7 +19,17 @@ function ForgotPassword({ onBack }) {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const timer = setTimeout(() => {
+        setErrors({});
+      }, 15000); // 15 segundos
+
+      return () => clearTimeout(timer);
+    }
+  }, [errors]);
 
   const validatePassword = (password) => {
     const regex =
@@ -28,10 +41,12 @@ function ForgotPassword({ onBack }) {
     e.preventDefault();
     setIsButtonDisabled(true);
     setErrors({});
+    setIsLoading(true);
 
     if (!forgotEmail) {
       setErrors({ forgotEmail: "El correo electrónico es requerido." });
       setIsButtonDisabled(false);
+      setIsLoading(false);
       return;
     }
 
@@ -39,11 +54,7 @@ function ForgotPassword({ onBack }) {
       await axios.post(
         `${import.meta.env.VITE_HOST_EXPRESS}/api/auth/forgot-password`,
         { email: forgotEmail },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
       setIsSubmitted(true);
     } catch (error) {
@@ -51,91 +62,97 @@ function ForgotPassword({ onBack }) {
       setErrors({ forgotEmail: "Error al enviar el código de verificación." });
     } finally {
       setIsButtonDisabled(false);
+      setIsLoading(false);
     }
   };
 
-  const handleVerifyCode = async (e) => {
+  const handlePasswordChange = async (e) => {
     e.preventDefault();
     setIsButtonDisabled(true);
     setErrors({});
+    setIsLoading(true);
 
-    const newErrors = {};
-
-    // Validaciones
-    const codeRegex = /^\d{6}$/;
-    if (!verificationCode) {
-      newErrors.verificationCode = "El código de verificación es requerido.";
-    } else if (!codeRegex.test(verificationCode)) {
-      newErrors.verificationCode =
-        "El código de verificación debe tener exactamente 6 dígitos.";
-    }
-
-    if (!newPassword) {
-      newErrors.newPassword = "La nueva contraseña es requerida.";
-    } else if (!validatePassword(newPassword)) {
-      newErrors.newPassword =
-        "La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, una letra minúscula, un número y un carácter especial.";
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = "Confirmar contraseña es requerida.";
-    } else if (newPassword !== confirmPassword) {
-      newErrors.confirmPassword = "Las contraseñas no coinciden.";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (!verificationCode || !newPassword || !confirmPassword) {
+      setErrors({ form: "Todos los campos son requeridos." });
       setIsButtonDisabled(false);
+      setIsLoading(false);
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setErrors({ confirmPassword: "Las contraseñas no coinciden." });
+      setIsButtonDisabled(false);
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validatePassword(newPassword)) {
+      setErrors({
+        newPassword:
+          "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una letra minúscula, un número y un carácter especial.",
+      });
+      setIsButtonDisabled(false);
+      setIsLoading(false);
       return;
     }
 
     try {
       await axios.post(
-        `${import.meta.env.VITE_HOST_EXPRESS}/api/auth/verify-code`,
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/auth/reset-password`,
         {
           email: forgotEmail,
-          code: verificationCode,
-          newPassword: newPassword,
+          verificationCode,
+          newPassword,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: { "Content-Type": "application/json" } }
       );
       setIsPasswordChanged(true);
     } catch (error) {
-      console.error("Error al verificar el código:", error);
-      setErrors({ verificationCode: "Error al verificar el código." });
+      console.error("Error al cambiar la contraseña:", error);
+      setErrors({ form: "Error al cambiar la contraseña." });
     } finally {
       setIsButtonDisabled(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center absolute top-0 left-0 bg-transparent bg-opacity-90">
-      <header className="absolute top-4 left-4 flex items-center">
+    <div className="w-full min-h-screen flex flex-col items-center justify-between relative overflow-y-auto p-4">
+      {/* Header */}
+      <motion.header
+        className="w-full flex items-center justify-center md:justify-start p-4"
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         <Link
           to="/"
-          className="flex items-center transform transition duration-500 hover:scale-105 text-white ml-4"
+          className="flex items-center transform transition duration-500 hover:scale-105 text-white"
         >
           <MecaLabIcon color="white" width="52" height="52" />
-          <p className="font-bold text-2xl ml-2">MecaLab</p>
+          <p className="font-bold text-lg md:text-2xl ml-2">MecaLab</p>
         </Link>
-      </header>
-      <div>
-        <div className="flex items-center justify-center p-4">
-          <MecaLabIcon color="white" width="52" height="52" />
-        </div>
-        {isPasswordChanged ? (
+      </motion.header>
+
+      {/* Main Content */}
+      <motion.div
+        className="w-full max-w-md p-4 flex-grow flex flex-col justify-center"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        {isLoading ? (
+          <Loading />
+        ) : isPasswordChanged ? (
           <PasswordChanged onBack={onBack} />
         ) : isSubmitted ? (
           <CodeSent
             onBack={onBack}
-            onPasswordChange={handleVerifyCode}
+            onPasswordChange={handlePasswordChange}
             setVerificationCode={setVerificationCode}
             setNewPassword={setNewPassword}
             setConfirmPassword={setConfirmPassword}
+            email={forgotEmail}
             errors={errors}
           />
         ) : (
@@ -146,11 +163,21 @@ function ForgotPassword({ onBack }) {
             errors={errors}
           />
         )}
-      </div>
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white opacity-60">
-        Departamento de Metal-Mecanica del ITD
-      </div>
-      <div className="absolute bottom-4 right-4">
+        {Object.keys(errors).length > 0 && (
+          <Alert message={Object.values(errors).join(", ")} />
+        )}
+      </motion.div>
+
+      {/* Footer */}
+      <motion.footer
+        className="w-full flex flex-col lg:flex-row items-center lg:justify-between gap-4 p-4"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <p className="text-xs md:text-sm text-white opacity-60 text-center lg:text-left">
+          Departamento de Metal-Mecánica del ITD
+        </p>
         <a
           href="https://www.itdurango.edu.mx/"
           target="_blank"
@@ -158,44 +185,41 @@ function ForgotPassword({ onBack }) {
         >
           <img
             src={ImageITD}
-            alt="Descripción de la segunda imagen"
-            className="h-12"
+            alt="ITD Logo"
+            className="h-12 md:h-16 transition transform duration-500 hover:scale-110"
           />
         </a>
-      </div>
+      </motion.footer>
     </div>
   );
 }
 
 function ResetPasswordForm({ onSubmit, onBack, setForgotEmail, errors }) {
   return (
-    <div className="form-style p-8 shadow-md text-center text-white rounded-xl border border-white">
-      <h2 className="text-2xl font-bold mb-4">Restablecer Contraseña</h2>
-      <p className="mb-4">
-        Ingresa tu correo electrónico para restablecer tu <br />
-        contraseña
+    <div className="form-style p-6 md:p-8 bg-white bg-opacity-10 shadow-md text-center text-white rounded-xl border border-white">
+      <h2 className="text-xl md:text-2xl font-bold mb-4">
+        Restablecer Contraseña
+      </h2>
+      <p className="mb-4 text-sm md:text-base">
+        Ingresa tu correo electrónico para restablecer tu contraseña
       </p>
-      <div className="my-2">
-        <InputField
-          label="Correo Electrónico"
-          type="email"
-          name="email"
-          id="email"
-          placeholder="ejemplo@itdurango.edu.mx"
-          error={errors.forgotEmail}
-          delay={0.2}
-          onChange={(e) => setForgotEmail(e.target.value)}
-        />
-      </div>
+      <InputField
+        label="Correo Electrónico"
+        type="email"
+        placeholder="ejemplo@itdurango.edu.mx"
+        error={errors.forgotEmail}
+        delay={0.2}
+        onChange={(e) => setForgotEmail(e.target.value)}
+      />
       <button
         onClick={onSubmit}
-        className="btn-change-blue w-full py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
+        className="btn-change-blue w-full py-2 mt-4 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
       >
         Enviar Código de Verificación
       </button>
       <button
         onClick={onBack}
-        className="mt-4 underline opacity-60 hover:opacity-100 hover:no-underline transform transition duration-500"
+        className="mt-4 underline text-sm opacity-60 hover:opacity-100 transform duration-500"
       >
         Volver al inicio de sesión
       </button>
@@ -209,19 +233,15 @@ function CodeSent({
   setVerificationCode,
   setNewPassword,
   setConfirmPassword,
+  email,
   errors,
 }) {
   return (
-    <div className="form-style p-8 shadow-md text-center text-white rounded-xl border border-white">
-      <h2 className="text-2xl font-bold mb-4">Verificar Código</h2>
-      <p>
-        Ingresa el código de verificación y tu nueva <br /> contraseña
-      </p>
+    <div className="form-style p-6 md:p-8 bg-white bg-opacity-10 shadow-md text-center text-white rounded-xl border border-white">
+      <h2 className="text-xl md:text-2xl font-bold mb-4">Verificar Código</h2>
       <InputField
         label="Código de Verificación"
         type="text"
-        name="verificationCode"
-        id="verificationCode"
         placeholder="Ingresa el código de verificación"
         error={errors.verificationCode}
         delay={0.2}
@@ -230,9 +250,7 @@ function CodeSent({
       <PasswordInputField
         label="Nueva Contraseña"
         type="password"
-        name="newPassword"
-        id="newPassword"
-        placeholder="Ingresa tu nueva contraseña"
+        placeholder="Nueva contraseña"
         error={errors.newPassword}
         delay={0.4}
         onChange={(e) => setNewPassword(e.target.value)}
@@ -240,22 +258,20 @@ function CodeSent({
       <PasswordInputField
         label="Confirmar Contraseña"
         type="password"
-        name="confirmPassword"
-        id="confirmPassword"
-        placeholder="Confirma tu nueva contraseña"
+        placeholder="Confirmar contraseña"
         error={errors.confirmPassword}
         delay={0.4}
         onChange={(e) => setConfirmPassword(e.target.value)}
       />
       <button
         onClick={onPasswordChange}
-        className="mt-2 btn-change-blue w-full py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
+        className="btn-change-blue w-full py-2 mt-4 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
       >
         Restablecer Contraseña
       </button>
       <button
         onClick={onBack}
-        className="mt-4 underline opacity-60 hover:opacity-100 hover:no-underline transform transition duration-500"
+        className="mt-4 underline text-sm opacity-60 hover:opacity-100 transform duration-500"
       >
         Volver al inicio de sesión
       </button>
@@ -265,15 +281,15 @@ function CodeSent({
 
 function PasswordChanged({ onBack }) {
   return (
-    <div className="form-style p-8 shadow-md text-center text-white rounded-xl border border-white">
-      <h2 className="text-2xl font-bold mb-4">Contraseña Cambiada</h2>
+    <div className="form-style p-6 md:p-8 bg-white bg-opacity-10 shadow-md text-center text-white rounded-xl border border-white">
+      <h2 className="text-xl md:text-2xl font-bold mb-4">
+        Contraseña Cambiada
+      </h2>
       <p>Tu contraseña ha sido cambiada exitosamente.</p>
-      <div className="flex items-center justify-center mt-4">
-        <IconSquareCheck className="w-20 h-20" />
-      </div>
+      <IconSquareCheck className="w-16 h-16 mx-auto mt-4" />
       <button
         onClick={onBack}
-        className="mt-4 underline opacity-60 hover:opacity-100 hover:no-underline transform transition duration-500"
+        className="mt-4 underline text-sm opacity-60 hover:opacity-100 transform duration-500"
       >
         Volver al inicio de sesión
       </button>

@@ -1,6 +1,6 @@
 import React from "react";
 import ContainerHome from "../Container/ContainerBG";
-import "./LazyLoaderBlue.css";
+import "./loader.css";
 
 const LazyLoaderBlue = () => {
   return (
