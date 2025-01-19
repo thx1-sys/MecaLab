@@ -51,10 +51,10 @@ function LoginForm({
       })
       .then((response) => {
         if (response.status !== 200) return;
-
         const userType = response.data.user.user_type;
+        console.log(userType);
         if (userType === 1 || userType === 2) {
-          navigate("/home-request-user");
+          navigate("/student-home");
         } else if (userType === 3) {
           navigate("/dashboardadmin");
         } else {

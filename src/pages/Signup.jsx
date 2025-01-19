@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import ContainerBGRED from "../components/Container/ContainerBGRED";
 import InputField from "../components/Input/InputField";
 import Machine from "../assets/Img/Machine_2.webp";
@@ -15,24 +16,62 @@ function Signup() {
     correo: "",
     contrasena: "",
     confirmarContrasena: "",
+    verificationCode: "", // Agregar este campo para capturar el código
   });
 
   const [showVerifyEmailForm, setShowVerifyEmailForm] = useState(false);
   const [showVerificationSuccess, setShowVerificationSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowVerifyEmailForm(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/auth/register`,
+        {
+          firstName: formData.nombre,
+          lastName: formData.apellido,
+          email: formData.correo,
+          password: formData.contrasena,
+          controlNumber: formData.numeroControl,
+        }
+      );
+      setShowVerifyEmailForm(true);
+    } catch (error) {
+      setError(error.response?.data || "Error al registrar el usuario.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleVerifyEmail = (e) => {
+  const handleVerifyEmail = async (e) => {
     e.preventDefault();
-    setShowVerificationSuccess(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/auth/verify-registration`,
+        {
+          email: formData.correo,
+          verificationCode: formData.verificationCode,
+        }
+      );
+      setShowVerificationSuccess(true);
+    } catch (error) {
+      setError(error.response?.data || "Error al verificar el código.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,13 +105,18 @@ function Signup() {
           />
         ) : showVerifyEmailForm ? (
           <VerifyEmailForm
+            formData={formData}
+            onChange={handleChange}
             onSubmit={handleVerifyEmail}
             onBack={() => setShowVerifyEmailForm(false)}
           />
         ) : (
           <SignupForm
+            formData={formData}
+            onChange={handleChange}
             onSubmit={handleSubmit}
-            onBack={() => setShowVerifyEmailForm(false)}
+            loading={loading}
+            error={error}
           />
         )}
       </main>
@@ -100,20 +144,23 @@ function Signup() {
   );
 }
 
-function SignupForm({ onSubmit, onBack }) {
+function SignupForm({ formData, onChange, onSubmit, loading, error }) {
   return (
     <div className="w-full max-w-md form-style p-8 shadow-md text-center text-white rounded-xl border border-white">
       <h2 className="text-2xl font-bold mb-4">Registro</h2>
       <p className="mb-1">
         ¡Bienvenido! Por favor, ingresa tus datos para registrarte
       </p>
+      {error && <p className="text-red-500">{error}</p>}
       <div className="my-1">
         <InputField
           label="Nombre completo"
           type="text"
-          name="fullName"
-          id="fullName"
+          name="nombre"
+          id="nombre"
           placeholder="Nombre completo"
+          value={formData.nombre}
+          onChange={onChange}
           error=""
           delay={0.2}
           className="w-full"
@@ -121,11 +168,26 @@ function SignupForm({ onSubmit, onBack }) {
       </div>
       <div className="my-1">
         <InputField
+          label="Apellido"
+          type="text"
+          name="apellido"
+          id="apellido"
+          placeholder="Apellido"
+          value={formData.apellido}
+          onChange={onChange}
+          error=""
+          delay={0.2}
+        />
+      </div>
+      <div className="my-1">
+        <InputField
           label="Número de Control"
           type="text"
-          name="controlNumber"
-          id="controlNumber"
+          name="numeroControl"
+          id="numeroControl"
           placeholder="Número de Control"
+          value={formData.numeroControl}
+          onChange={onChange}
           error=""
           delay={0.2}
         />
@@ -134,9 +196,11 @@ function SignupForm({ onSubmit, onBack }) {
         <InputField
           label="Correo Electrónico"
           type="email"
-          name="email"
-          id="email"
+          name="correo"
+          id="correo"
           placeholder="ejemplo@itdurango.edu.mx"
+          value={formData.correo}
+          onChange={onChange}
           error=""
           delay={0.2}
         />
@@ -145,9 +209,11 @@ function SignupForm({ onSubmit, onBack }) {
         <InputField
           label="Contraseña"
           type="password"
-          name="password"
-          id="password"
+          name="contrasena"
+          id="contrasena"
           placeholder="Contraseña"
+          value={formData.contrasena}
+          onChange={onChange}
           error=""
           delay={0.2}
         />
@@ -156,9 +222,11 @@ function SignupForm({ onSubmit, onBack }) {
         <InputField
           label="Confirmar Contraseña"
           type="password"
-          name="confirmPassword"
-          id="confirmPassword"
+          name="confirmarContrasena"
+          id="confirmarContrasena"
           placeholder="Confirmar Contraseña"
+          value={formData.confirmarContrasena}
+          onChange={onChange}
           error=""
           delay={0.2}
         />
@@ -166,20 +234,18 @@ function SignupForm({ onSubmit, onBack }) {
       <button
         onClick={onSubmit}
         className="btn-shadow-rose w-full py-2 bg-transparent border border-white text-white rounded-lg hover:bg-[#B42E61] hover:border-[#B42E61] transition duration-500"
+        disabled={loading}
       >
-        Registrarse
+        {loading ? "Registrando..." : "Registrarse"}
       </button>
-      <button
-        onClick={onBack}
-        className="mt-4 underline opacity-60 hover:opacity-100 hover:no-underline transform transition duration-500"
-      >
+      <button className="mt-4 underline opacity-60 hover:opacity-100 hover:no-underline transform transition duration-500">
         Volver al inicio de sesión
       </button>
     </div>
   );
 }
 
-function VerifyEmailForm({ onSubmit, onBack }) {
+function VerifyEmailForm({ formData, onChange, onSubmit, onBack }) {
   return (
     <div className="form-style p-8 shadow-md text-center text-white rounded-xl border border-white">
       <h2 className="text-2xl font-bold mb-4">Verificar Correo Electrónico</h2>
@@ -194,6 +260,8 @@ function VerifyEmailForm({ onSubmit, onBack }) {
           name="verificationCode"
           id="verificationCode"
           placeholder="Código de Verificación"
+          value={formData.verificationCode}
+          onChange={onChange}
           error=""
           delay={0.2}
         />
@@ -222,10 +290,7 @@ function VerificationSuccess({ onBack }) {
       <div className="flex items-center justify-center mt-4">
         <IconSquareCheck className="w-20 h-20" />
       </div>
-      <button
-        onClick={onBack}
-        className="mt-4 underline opacity-60 hover:opacity-100 hover:no-underline transform transition duration-500"
-      >
+      <button className="mt-4 underline opacity-60 hover:opacity-100 hover:no-underline transform transition duration-500">
         Volver al inicio de sesión
       </button>
     </div>

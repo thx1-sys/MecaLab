@@ -6,3 +6,18 @@ body {
   @apply font-sans overflow-hidden;
   margin: 0;
 }
+
+.custom-scrollbar-home {
+  padding-right: 0.2rem;
+}
+
+.custom-scrollbar-home::-webkit-scrollbar {
+  width: 8px;
+  background-color: rgba(255, 255, 255, 0.01);
+  border-radius: 4px;
+}
+
+.custom-scrollbar-home::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+}
