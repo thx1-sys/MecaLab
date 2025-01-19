@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import "./StudentHome.css"; // Asegúrate de importar el archivo CSS
+import "./ContainerBG.css"; // Asegúrate de importar el archivo CSS
 
-function ContainerHome() {
+function ContainerBG() {
   useEffect(() => {
     const shapesContainer = document.querySelector(".shapes");
     shapesContainer.innerHTML = ""; // Limpiar el contenedor de formas
@@ -37,4 +37,4 @@ function ContainerHome() {
   );
 }
 
-export default ContainerHome;
+export default ContainerBG;
