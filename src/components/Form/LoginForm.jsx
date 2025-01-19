@@ -1,10 +1,13 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie";
 import MecaLabIcon from "../svg/MecaLabIconDark";
 import InputField from "../Input/InputField";
 import PasswordInputField from "../Input/PasswordInputField";
 import Machine from "../../assets/Img/Machine_1.webp";
 import ImageITD from "../../assets/Img/ITD_Logo.PNG";
+import Alert from "../Alert/Alert";
 
 function LoginForm({
   email,
@@ -13,8 +16,127 @@ function LoginForm({
   handlePasswordChange,
   handleShowNewComponent,
 }) {
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (error) {
+      setIsButtonDisabled(true);
+      const timer = setTimeout(() => {
+        setError("");
+        setIsButtonDisabled(false);
+      }, 3000); // 3 segundos
+
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  const validateToken = () => {
+    const token = Cookies.get("token") || sessionStorage.getItem("token");
+    if (!token) {
+      console.log("Token not found");
+      return;
+    }
+
+    axios
+      .get(`${import.meta.env.VITE_HOST_EXPRESS}/api/protected`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        if (response.status !== 200) return;
+
+        const userType = response.data.user.user_type;
+        if (userType === 1 || userType === 2) {
+          navigate("/home-request-user");
+        } else if (userType === 3) {
+          navigate("/dashboardadmin");
+        } else {
+          console.log("Unknown user type");
+        }
+      })
+      .catch((error) => {
+        console.error("Error validating token:", error);
+      });
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      validateToken();
+    }
+  }, [isAuthenticated, navigate]);
+
+  const validateForm = () => {
+    let isValid = true;
+    if (!email) {
+      setEmailError("El correo electrónico es obligatorio");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+    if (!password) {
+      setPasswordError("La contraseña es obligatoria");
+      isValid = false;
+    } else if (password.length < 8) {
+      setPasswordError("La contraseña debe tener más de 8 caracteres");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+    return isValid;
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/auth/login`,
+        {
+          email,
+          password,
+          rememberMe,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.token) {
+        if (rememberMe) {
+          document.cookie = `token=${response.data.token}; path=/; max-age=${
+            30 * 24 * 60 * 60
+          }`;
+        } else {
+          sessionStorage.setItem("token", response.data.token);
+        }
+        setError("");
+        setIsAuthenticated(true);
+      } else {
+        setError(
+          "Datos incorrectos. Por favor, verifica tu usuario y contraseña."
+        );
+      }
+    } catch (error) {
+      setError(
+        "Datos incorrectos. Por favor, verifica tu usuario y contraseña."
+      );
+    }
+  };
+
   return (
     <>
+      {error && <Alert message={error} />}
       <div className="w-1/2 h-full flex flex-col p-8">
         <header className="h-1/5 flex items-start">
           <Link
@@ -45,6 +167,7 @@ function LoginForm({
               error=""
               delay={0.2}
             />
+            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
           </div>
           <div className="w-2/3 my-2">
             <PasswordInputField
@@ -58,6 +181,9 @@ function LoginForm({
               error=""
               delay={0.4}
             />
+            {passwordError && (
+              <p className="text-red-500 text-sm">{passwordError}</p>
+            )}
           </div>
           <div className="my-4 w-2/3 flex justify-between items-center">
             <div className="flex items-center justify-center transform transition duration-500">
@@ -69,6 +195,8 @@ function LoginForm({
                   id="rememberMe"
                   type="checkbox"
                   className="peer hidden"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
                 />
                 <div
                   htmlFor="rememberMe"
@@ -86,6 +214,13 @@ function LoginForm({
               </a>
             </div>
           </div>
+          <button
+            className="w-2/3 mt-6 btn-change-blue py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
+            onClick={handleLogin}
+            disabled={isButtonDisabled}
+          >
+            Iniciar Sesión
+          </button>
           <p className="mt-3 text-lg opacity-70">
             ¿No Estás registrado?{" "}
             <Link
