@@ -2,21 +2,34 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import MecaLabIcon from "../svg/MecaLabIconDark";
-import UserImage from "../../assets/Img/Photo_Example_User.webp";
 import MenuStudent from "../Menu/MenuStudent";
+import UserImage from "../../assets/Img/Photo_Example_User.webp";
+import { fetchUser } from "../../services/userService";
 import "./HeaderStudentHome.css";
 
-function HeaderLogin() {
+function HeaderStudentHome() {
   const [showHeader, setShowHeader] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [username, setUsername] = useState("");
+  const [profileImageUrl, setProfileImageUrl] = useState(UserImage);
   const nodeRef = useRef(null);
 
   useEffect(() => {
     setShowHeader(true);
+
+    const getUserData = async () => {
+      const userData = await fetchUser();
+      if (userData) {
+        setUsername(userData.username);
+        setProfileImageUrl(userData.profileImageUrl || UserImage);
+      }
+    };
+
+    getUserData();
   }, []);
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center z-20">
       <CSSTransition
         in={showHeader}
         timeout={500}
@@ -33,21 +46,21 @@ function HeaderLogin() {
             className="flex items-center transform transition duration-500 hover:scale-105"
             onClick={() => window.location.reload()}
           >
-            <MecaLabIcon color="white" width="52" height="52" />
-            <p className="font-bold text-2xl ml-4">MecaLab</p>
+            <MecaLabIcon color="white" width="42" height="42" />
+            <p className="font-bold text-2xl ml-4 hidden sm:block">MecaLab</p>
           </Link>
-          <div className="font-bold text-3xl text-center">
+          <div className="font-bold text-3xl text-center hidden md:block">
             Solicitud de Laboratorio Metal-Mecánica
           </div>
           <div className="flex items-center relative">
-            <div className="flex flex-col text-right space-y-1 mr-4">
-              <div className="font-bold text-xs">Usuario</div>
-              <div className="text-sm text-xs">Estudiante</div>
+            <div className="flex flex-col text-right space-y-1 mr-4 hidden md:block">
+              <div className="font-bold text-xs md:text-sm">{username}</div>
+              <div className="text-xs md:text-sm">Estudiante</div>
             </div>
             <img
-              src={UserImage}
+              src={profileImageUrl}
               alt="Imagen de Usuario"
-              className="w-12 h-12 rounded-full transform transition duration-500 hover:scale-105 cursor-pointer"
+              className="w-10 h-10 md:w-12 md:h-12 rounded-full transform transition duration-500 hover:scale-105 cursor-pointer"
               onClick={() => setShowMenu(!showMenu)}
             />
             <MenuStudent showMenu={showMenu} setShowMenu={setShowMenu} />
@@ -58,4 +71,4 @@ function HeaderLogin() {
   );
 }
 
-export default HeaderLogin;
+export default HeaderStudentHome;

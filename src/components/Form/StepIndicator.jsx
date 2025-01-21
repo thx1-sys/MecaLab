@@ -9,7 +9,7 @@ const StepIndicator = ({ currentStep, stepNumber, label }) => {
     <li
       className={`step-indicator flex flex-col items-center w-full ${
         isActive ? "text-white opacity-100" : "text-gray-500 opacity-50"
-      }`}
+      } ${currentStep !== stepNumber ? "hidden md:flex" : "flex"}`}
     >
       <motion.span
         className="flex items-center mb-2"

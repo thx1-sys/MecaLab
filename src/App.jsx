@@ -6,6 +6,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import LazyLoaderBlue from "./components/Loader/LazyLoaderBlue";
+import LazyLoaderRed from "./components/Loader/LazyLoaderRed";
 
 const Signup = lazy(() => import("./pages/Signup"));
 const Login = lazy(() => import("./pages/Login"));

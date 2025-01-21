@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "./StudentHome.css"; // Asegúrate de importar el archivo CSS
 
 function ContainerHome() {
   useEffect(() => {

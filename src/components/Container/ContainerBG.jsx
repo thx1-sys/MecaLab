@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
-import "./ContainerBG.css"; // Asegúrate de importar el archivo CSS
+import "./ContainerBG.css";
 
 function ContainerBG() {
   useEffect(() => {
     const shapesContainer = document.querySelector(".shapes");
+    if (!shapesContainer) return; // Asegúrate de que el contenedor exista
+
     shapesContainer.innerHTML = ""; // Limpiar el contenedor de formas
 
     const numberOfShapes = Math.floor(Math.random() * 5) + 3; // Número aleatorio entre 3 y 7

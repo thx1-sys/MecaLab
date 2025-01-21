@@ -5,8 +5,11 @@ import CloseIcon from "../svg/CloseIcon";
 const ChangeImageModal = ({ show, onClose, onImageChange }) => {
   const handleImageChange = (event) => {
     event.preventDefault();
-    onImageChange(event);
-    onClose(); // Cierra el modal después de cargar la imagen
+    const file = event.target.files[0];
+    if (!file) return;
+
+    onImageChange(file); // Actualiza la imagen en el componente padre
+    onClose(); // Cierra el modal después de seleccionar la imagen
   };
 
   const handleDragOver = (event) => {
@@ -20,8 +23,7 @@ const ChangeImageModal = ({ show, onClose, onImageChange }) => {
       const fileEvent = {
         target: { files: [file] },
       };
-      onImageChange(fileEvent);
-      onClose(); // Cierra el modal después de cargar la imagen
+      handleImageChange(fileEvent);
     }
   };
 

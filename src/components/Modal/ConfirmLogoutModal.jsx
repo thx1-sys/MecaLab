@@ -1,10 +1,16 @@
 import React from "react";
 import { CSSTransition } from "react-transition-group";
+import Cookies from "js-cookie";
 
 const ConfirmLogoutModal = ({ show, onConfirm, onCancel }) => {
   const handleConfirm = () => {
     // Limpiar el sessionStorage
     sessionStorage.clear();
+    // Limpiar el localStorage
+    localStorage.clear();
+    // Borrar las cookies
+    Cookies.remove("token");
+
     // Llamar a la función onConfirm pasada como prop
     onConfirm();
   };

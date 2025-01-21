@@ -25,7 +25,7 @@ function Login() {
   };
 
   return (
-    <div className="w-screen h-screen flex relative">
+    <div className="w-screen h-screen flex relative custom-scrollbar-home">
       <ContainerBG />
       {showNewComponent ? (
         <ForgotPassword onBack={handleBackClick} />

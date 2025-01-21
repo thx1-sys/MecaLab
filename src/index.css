@@ -25,3 +25,29 @@ body {
 .btn-change-blue:hover {
   box-shadow: 0 0 20px 5px rgba(59, 130, 246, 0.8);
 }
+
+.form-style {
+  background: linear-gradient(
+    to bottom,
+    rgba(217, 217, 217, 0.2),
+    rgba(115, 115, 115, 0.2)
+  );
+  backdrop-filter: blur(10px);
+}
+
+.form-style-2 {
+  background: linear-gradient(
+    to bottom,
+    rgba(217, 217, 217, 0.3),
+    rgba(115, 115, 115, 0.3)
+  );
+  backdrop-filter: blur(10px);
+}
+
+.hover-shadow-white:hover {
+  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.8);
+}
+
+.btn-shadow-rose:hover {
+  box-shadow: 0 0 20px 5px rgba(180, 46, 97, 0.8);
+}

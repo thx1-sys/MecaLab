@@ -31,9 +31,19 @@ const HomeMenu = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.0, duration: 0.4 }}
         >
-          <Link to="/" className="flex items-center">
-            <MecaLabIcon color="white" width="52" height="52" />
-            <p className="font-bold text-2xl ml-4 hidden lg:block">MecaLab</p>
+          <Link
+            to="/"
+            className="flex items-center transform transition duration-500 hover:scale-105"
+          >
+            <MecaLabIcon
+              color="white"
+              width="32"
+              height="32"
+              className="lg:w-42 lg:h-42"
+            />
+            <p className="font-bold text-xl ml-2 lg:text-2xl lg:ml-4 hidden lg:block">
+              MecaLab
+            </p>
           </Link>
         </motion.div>
 
@@ -95,7 +105,7 @@ const HomeMenu = () => {
 
         {/* Botón para pantallas pequeñas */}
         <button
-          className="lg:hidden text-white focus:outline-none"
+          className="lg:hidden text-white focus:outline-none transform transition duration-500 hover:scale-105"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <svg

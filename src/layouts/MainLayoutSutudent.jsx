@@ -1,14 +1,14 @@
 import React from "react";
 import HeaderLogin from "../components/Header/HeaderStudentHome";
-import FooterLogin from "../components/Footer/FooterLogin";
+import FooterStudent from "../components/Footer/FooterStudent";
 
 function MainLayoutSutudent({ children }) {
   return (
-    <div className="w-screen h-screen bg-[#0B192C] relative">
-      <div className="relative z-10">
+    <div className="w-screen">
+      <div className="z-10 flex flex-col">
         <HeaderLogin />
-        {children}
-        <FooterLogin />
+        <main className="flex items-center justify-center">{children}</main>
+        <FooterStudent />
       </div>
     </div>
   );

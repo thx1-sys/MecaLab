@@ -51,7 +51,7 @@ const MenuStudent = ({ showMenu, setShowMenu }) => {
       >
         <div
           ref={menuRef}
-          className="menu-style absolute top-full right-0 mt-2 text-white shadow p-4 min-w-[12rem] border-[#999999] border rounded-xl transition-transform transform-gpu z-50"
+          className="menu-style absolute top-full right-0 mt-2 text-white shadow p-4 min-w-[12rem] max-w-[90vw] md:max-w-[20rem] border-[#999999] border rounded-xl transition-transform transform-gpu z-50 md:top-full md:right-0 md:mt-2 md:transform-none md:translate-x-0 md:translate-y-0"
         >
           <p className="font-normal text-center mb-2">Menú</p>
           <button

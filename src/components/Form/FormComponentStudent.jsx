@@ -29,7 +29,7 @@ function FormComponentStudent() {
     }
 
     return (
-      <div className="flex justify-center items-center min-h-screen ">
+      <div className="flex justify-center items-center w-full mx-auto p-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -37,7 +37,7 @@ function FormComponentStudent() {
           transition={{ duration: 0.5 }}
           className={`form-style rounded-3xl p-8 border-[#999999] border-2 w-full ${
             view === "material" ? "max-w-5xl" : "max-w-xl"
-          } z-50`} // Added z-50 class here
+          } z-50`}
         >
           <AnimatePresence exitBeforeEnter>
             {(() => {
@@ -50,7 +50,7 @@ function FormComponentStudent() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.5 }}
-                      className={view === "material" ? "w-full" : "w-auto"}
+                      className="w-full"
                     >
                       <MaterialForm onBack={() => setView("main")} />
                     </motion.div>
@@ -63,7 +63,7 @@ function FormComponentStudent() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.5 }}
-                      className={view === "machine" ? "w-full" : "w-auto"}
+                      className="w-full"
                     >
                       <MachineForm onBack={() => setView("main")} />
                     </motion.div>
@@ -71,19 +71,17 @@ function FormComponentStudent() {
                 default:
                   return (
                     <>
-                      <h2 className="text-2xl font-bold mb-6 text-center text-white">
+                      <h2 className="text-lg md:text-2xl font-bold mb-6 text-center text-white">
                         Selecciona una opción para continuar con tu solicitud.
                       </h2>
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.5, duration: 0.5 }}
-                        className={`mb-4 flex justify-center space-x-4 ${
-                          view === "material" ? "w-full" : "w-auto"
-                        }`}
+                        className="mb-4 flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 w-full"
                       >
                         <button
-                          className={`${buttonBase} w-1/2 py-8 px-4 mb-4 flex flex-col items-center justify-center`}
+                          className={`${buttonBase} w-full md:w-1/2 py-8 px-4 flex flex-col items-center justify-center`}
                           type="button"
                           onClick={() => setView("material")}
                         >
@@ -92,7 +90,7 @@ function FormComponentStudent() {
                         </button>
 
                         <button
-                          className={`${buttonBase} w-1/2 py-8 px-4 mb-4 flex flex-col items-center justify-center`}
+                          className={`${buttonBase} w-full md:w-1/2 py-8 px-4 flex flex-col items-center justify-center`}
                           type="button"
                           onClick={() => setView("machine")}
                         >
@@ -107,7 +105,7 @@ function FormComponentStudent() {
                         className="flex items-center justify-center"
                       >
                         <button
-                          className={`${buttonBase} w-auto py-4 px-6 mb-4 flex items-center justify-center`}
+                          className={`${buttonBase} w-full md:w-auto text-sm md:text0lg py-4 px-6 flex items-center justify-center`}
                           type="button"
                           onClick={() => {
                             setShowModal(true);
@@ -129,18 +127,16 @@ function FormComponentStudent() {
   };
 
   return (
-    <>
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.5 }}
-        >
-          {renderView()}
-        </motion.div>
-      </AnimatePresence>
-    </>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.5 }}
+      >
+        {renderView()}
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
