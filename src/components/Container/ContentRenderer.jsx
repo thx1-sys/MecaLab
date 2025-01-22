@@ -1,6 +1,7 @@
 import React from "react";
 import HomeContent from "../Admin/HomeContent";
 import RequestsContent from "../Admin/RequestsContent";
+import MaterialsContent from "../Admin/MaterialsContent";
 
 const ContentRenderer = ({ activeContent }) => {
   switch (activeContent) {
@@ -13,7 +14,7 @@ const ContentRenderer = ({ activeContent }) => {
     case "machines":
       return <div>Machines Content</div>;
     case "materials":
-      return <div>Materials Content</div>;
+      return <MaterialsContent />;
     case "users":
       return <div>Users Content</div>;
     case "settings":

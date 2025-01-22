@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import InputField from "../../Input/InputField";
 import SelectField from "../../Input/SelectField";
@@ -24,9 +24,76 @@ const StepOne = ({
   const [isVisible, setIsVisible] = useState(true);
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    // Cargar datos desde sessionStorage cuando el componente se monta
+    const storedFullName = sessionStorage.getItem("fullName");
+    const storedStudentId = sessionStorage.getItem("studentId");
+    const storedInstitutionalEmail =
+      sessionStorage.getItem("institutionalEmail");
+    const storedPhoneNumber = sessionStorage.getItem("phoneNumber");
+    const storedCareer = sessionStorage.getItem("career");
+    const storedSemester = sessionStorage.getItem("semester");
+
+    if (storedFullName) setFullName(storedFullName);
+    if (storedStudentId) setStudentId(storedStudentId);
+    if (storedInstitutionalEmail)
+      setInstitutionalEmail(storedInstitutionalEmail);
+    if (storedPhoneNumber) setPhoneNumber(storedPhoneNumber);
+    if (storedCareer) setCareer(storedCareer);
+    if (storedSemester) setSemester(storedSemester);
+  }, [
+    setFullName,
+    setStudentId,
+    setInstitutionalEmail,
+    setPhoneNumber,
+    setCareer,
+    setSemester,
+  ]);
+
+  const validate = () => {
+    const newErrors = {};
+    const phoneRegex = /^618\d{7}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@itdurango\.edu\.mx$/;
+    const studentIdRegex = /^\d{7,8}$/;
+
+    if (!fullName) newErrors.fullName = "El nombre completo es obligatorio";
+    if (!studentId) {
+      newErrors.studentId = "El número de control es obligatorio";
+    } else if (!studentIdRegex.test(studentId)) {
+      newErrors.studentId = "El número de control debe tener de 7-8 dígitos";
+    }
+    if (!institutionalEmail) {
+      newErrors.institutionalEmail = "El correo electrónico es obligatorio";
+    } else if (!emailRegex.test(institutionalEmail)) {
+      newErrors.institutionalEmail =
+        "El correo electrónico debe tener la extensión @itdurango.edu.mx";
+    }
+    if (!phoneNumber) {
+      newErrors.phoneNumber = "El número de teléfono es obligatorio";
+    } else if (!phoneRegex.test(phoneNumber)) {
+      newErrors.phoneNumber =
+        "El número de teléfono debe ser de 10 dígitos y comenzar con 618";
+    }
+    if (!career) newErrors.career = "La carrera es obligatoria";
+    if (!semester) newErrors.semester = "El semestre es obligatorio";
+    return newErrors;
+  };
+
   const handleNext = () => {
-    setErrors({}); // Reset errors
-    handleNextStep();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else {
+      setErrors({});
+      // Guardar los datos en sessionStorage
+      sessionStorage.setItem("fullName", fullName);
+      sessionStorage.setItem("studentId", studentId);
+      sessionStorage.setItem("institutionalEmail", institutionalEmail);
+      sessionStorage.setItem("phoneNumber", phoneNumber);
+      sessionStorage.setItem("career", career);
+      sessionStorage.setItem("semester", semester);
+      handleNextStep();
+    }
   };
 
   const handleBack = () => {
@@ -53,7 +120,7 @@ const StepOne = ({
             animate={{ opacity: 1 }}
             transition={{ duration: 1 }}
           >
-            <div className="grid gap-6 mb-6 sm:grid-cols-2">
+            <div className="grid gap-4 mb-6 sm:grid-cols-2">
               <InputField
                 label="Nombre completo"
                 type="text"
@@ -61,7 +128,10 @@ const StepOne = ({
                 id="full-name"
                 placeholder="Escribe tu nombre completo"
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  sessionStorage.setItem("fullName", e.target.value);
+                }}
                 error={errors.fullName}
                 delay={1}
               />
@@ -72,7 +142,10 @@ const StepOne = ({
                 id="student-id"
                 placeholder="Escribe tu número de control"
                 value={studentId}
-                onChange={(e) => setStudentId(e.target.value)}
+                onChange={(e) => {
+                  setStudentId(e.target.value);
+                  sessionStorage.setItem("studentId", e.target.value);
+                }}
                 error={errors.studentId}
                 delay={1.25}
               />
@@ -83,7 +156,10 @@ const StepOne = ({
                 id="institutional-email"
                 placeholder="ejemplo@itdurango.edu.mx"
                 value={institutionalEmail}
-                onChange={(e) => setInstitutionalEmail(e.target.value)}
+                onChange={(e) => {
+                  setInstitutionalEmail(e.target.value);
+                  sessionStorage.setItem("institutionalEmail", e.target.value);
+                }}
                 error={errors.institutionalEmail}
                 delay={1.5}
               />
@@ -94,7 +170,10 @@ const StepOne = ({
                 id="phone-number"
                 placeholder="Escribe tu número de teléfono"
                 value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                onChange={(e) => {
+                  setPhoneNumber(e.target.value);
+                  sessionStorage.setItem("phoneNumber", e.target.value);
+                }}
                 error={errors.phoneNumber}
                 delay={1.75}
               />
@@ -108,7 +187,10 @@ const StepOne = ({
                   { value: "mecatronica", label: "Mecatrónica" },
                 ]}
                 value={career}
-                onChange={setCareer}
+                onChange={(e) => {
+                  setCareer(e.target.value);
+                  sessionStorage.setItem("career", e.target.value);
+                }}
                 error={errors.career}
                 delay={2}
               />
@@ -132,7 +214,10 @@ const StepOne = ({
                   { value: "12", label: "12" },
                 ]}
                 value={semester}
-                onChange={setSemester}
+                onChange={(e) => {
+                  setSemester(e.target.value);
+                  sessionStorage.setItem("semester", e.target.value);
+                }}
                 error={errors.semester}
                 delay={2.25}
               />
