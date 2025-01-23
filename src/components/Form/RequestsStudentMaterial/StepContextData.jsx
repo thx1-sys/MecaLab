@@ -128,7 +128,7 @@ const StepContextData = ({
 
   return (
     <>
-      <div className="w-full max-w-4xl mx-auto p-4">
+      <div className="w-full max-w-4xl mx-auto">
         <motion.h2
           className="text-2xl font-bold text-center text-white mt-4"
           initial={{ opacity: 0, y: -10 }}

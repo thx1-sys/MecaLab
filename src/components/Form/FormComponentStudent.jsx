@@ -37,7 +37,7 @@ function FormComponentStudent() {
           transition={{ duration: 0.5 }}
           className={`form-style rounded-3xl p-8 border-[#999999] border-2 w-full ${
             view === "material" ? "max-w-5xl" : "max-w-xl"
-          } z-50`}
+          } z-0`}
         >
           <AnimatePresence exitBeforeEnter>
             {(() => {

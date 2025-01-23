@@ -78,7 +78,11 @@ const MaterialsContent = () => {
 
   const handleAdd = () => {
     setIsEditMode(false);
-    setCurrentMaterial({ name: "", description: "", total_quantity: 0 });
+    setCurrentMaterial({
+      name: "",
+      description: "",
+      total_quantity: 0,
+    });
     setIsModalVisible(true);
   };
 
@@ -207,9 +211,14 @@ const MaterialsContent = () => {
       key: "description",
     },
     {
-      title: "Cantidad",
+      title: "Cantidad Total",
       dataIndex: "total_quantity",
       key: "total_quantity",
+    },
+    {
+      title: "Cantidad Disponible",
+      dataIndex: "available_quantity",
+      key: "available_quantity",
     },
     {
       title: "Imagen",

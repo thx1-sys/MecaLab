@@ -96,7 +96,24 @@ const MaterialForm = ({ onBack }) => {
         );
       case 4:
         return (
-          <StepThree handlePreviousStep={handlePreviousStep} onBack={onBack} />
+          <StepThree
+            fullName={fullName}
+            studentId={studentId}
+            institutionalEmail={institutionalEmail}
+            phoneNumber={phoneNumber}
+            career={career}
+            semester={semester}
+            selectedMaterial={selectedMaterial}
+            selectedQuantity={selectedQuantity}
+            requestDate={requestDate}
+            expectedReturnDate={expectedReturnDate}
+            reason={reason}
+            subject={subject}
+            teacher={teacher}
+            group={group}
+            handlePreviousStep={handlePreviousStep}
+            onBack={onBack}
+          />
         );
       default:
         return null;

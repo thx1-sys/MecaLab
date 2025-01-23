@@ -43,6 +43,12 @@ module.exports = {
         "gray-lg": "0 0 15px 5px rgba(117, 117, 117, 0.5)",
         "red-lg": "0 0 15px 5px rgba(255, 0, 0, 0.5)",
       },
+      zIndex: {
+        ...Array.from({ length: 30 }, (_, i) => i + 1).reduce((acc, val) => {
+          acc[val] = val;
+          return acc;
+        }, {}),
+      },
     },
   },
   plugins: [],

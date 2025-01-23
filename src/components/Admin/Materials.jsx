@@ -41,7 +41,6 @@ const Materials = () => {
     name: "",
     type: "",
     quantity: "",
-    unit: "",
     location: "",
     status: "",
     // Añade más campos si es necesario
@@ -63,7 +62,6 @@ const Materials = () => {
       name: material.name,
       type: material.type,
       quantity: material.quantity,
-      unit: material.unit,
       location: material.location,
       status: material.status,
       // Inicializa más campos si es necesario
@@ -176,8 +174,7 @@ const Materials = () => {
             <tr>
               <th className="py-3 px-5 bg-[#303030] rounded-tl-lg">Nombre</th>
               <th className="py-3 px-5 bg-[#303030]">Tipo</th>
-              <th className="py-3 px-5 bg-[#303030]">Cantidad</th>
-              <th className="py-3 px-5 bg-[#303030]">Unidad</th>
+              <th className="py-3 px-5 bg-[#303030]">Cantidad Disponible</th>
               <th className="py-3 px-5 bg-[#303030]">Ubicación</th>
               <th className="py-3 px-5 bg-[#303030]">Estado</th>
               <th className="py-3 px-5 bg-[#303030] rounded-tr-lg">Acciones</th>
@@ -192,7 +189,6 @@ const Materials = () => {
                 <td className="py-3 px-5">{material.name}</td>
                 <td className="py-3 px-5">{material.type}</td>
                 <td className="py-3 px-5">{material.quantity}</td>
-                <td className="py-3 px-5">{material.unit}</td>
                 <td className="py-3 px-5">{material.location}</td>
                 <td className="py-3 px-5">
                   {materialStatusMap[material.status]}
@@ -306,14 +302,6 @@ const Materials = () => {
                   name="quantity"
                   id="quantity"
                   value={formData.quantity}
-                  onChange={handleChange}
-                />
-                <InputField
-                  label="Unidad"
-                  type="text"
-                  name="unit"
-                  id="unit"
-                  value={formData.unit}
                   onChange={handleChange}
                 />
                 <InputField

@@ -8,7 +8,7 @@ function StudentHome() {
     <div className="h-screen overflow-y-auto overflow-x-hidden custom-scrollbar-home">
       <MainLayout>
         <ContainerBG />
-        <div className="relative z-10">
+        <div className="relative">
           <MainLogin />
         </div>
       </MainLayout>

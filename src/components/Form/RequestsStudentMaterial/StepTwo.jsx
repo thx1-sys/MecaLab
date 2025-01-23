@@ -102,6 +102,9 @@ const StepTwo = ({
     ) {
       newErrors.expectedReturnDate =
         "La fecha de devolución debe estar dentro de los próximos 30 días";
+    } else if (expectedReturnDate < requestDate) {
+      newErrors.expectedReturnDate =
+        "La fecha de devolución no puede ser menor que la fecha de solicitud";
     }
 
     return newErrors;

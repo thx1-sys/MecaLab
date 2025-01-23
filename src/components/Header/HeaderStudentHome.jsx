@@ -29,7 +29,7 @@ function HeaderStudentHome() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center z-20">
+    <div className="w-full flex justify-center z-10">
       <CSSTransition
         in={showHeader}
         timeout={500}
@@ -39,7 +39,7 @@ function HeaderStudentHome() {
       >
         <header
           ref={nodeRef}
-          className="w-11/12 h-[10vh] p-4 bg-transparent text-white flex justify-between items-center border-b border-white border-opacity-30 z-0"
+          className="w-11/12 h-[10vh] p-4 bg-transparent text-white flex justify-between items-center border-b border-white border-opacity-30 z-20"
         >
           <Link
             to="/student-home"
