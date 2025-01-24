@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaSignOutAlt, FaCogs, FaBox } from "react-icons/fa";
+import { FaSignOutAlt, FaCogs, FaBox, FaBars } from "react-icons/fa";
 import SidebarHeader from "../Header/SidebarHeader";
 import HomeIcon from "./Icons/HomeIcon";
 import MailIcon from "./Icons/MailIcon";
 import GraphIcon from "./Icons/GraphIcon";
 import UsersIcon from "./Icons/UsersIcon";
 import SettingsIcon from "./Icons/SettingsIcon";
-import LogoutIcon from "./Icons/LogoutIcon";
+import { useMediaQuery } from "react-responsive";
+import { motion } from "framer-motion";
 
 const menuItems = [
   { key: "home", icon: HomeIcon, label: "Inicio" },
@@ -23,6 +24,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const [showText, setShowText] = useState(false);
   const navigate = useNavigate();
   const [showIconText, setShowIconText] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
     if (isSidebarOpen) {
@@ -45,7 +47,8 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const baseBtnClasses =
     "group flex items-center px-2 py-2 cursor-pointer duration-500 transform rounded-lg gap-x-2 scale-90";
 
-  const hoverClasses = "hover:bg-[#255392] hover:shadow-lg hover:scale-105";
+  const hoverClasses =
+    "hover:bg-[#255392] hover:shadow-lg hover:scale-105 transition-transform duration-500";
 
   const iconGroupHoverClasses =
     "group-hover:text-white group-hover:fill-white group-hover:opacity-100";
@@ -56,55 +59,98 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const textColorClass = "text-[#131010] opacity-60 fill-[#131010]";
   const activeClass = "font-semibold opacity-100";
 
-  return (
-    <div className="p-4 relative h-full">
-      {/* Encabezado */}
-      <SidebarHeader
-        isSidebarOpen={isSidebarOpen}
-        setActiveContent={setActiveContent}
-        showText={showText}
-      />
+  const primaryMenuItems = menuItems.slice(1, 5);
 
-      {/* Opciones */}
-      <div className="m-4 text-sm">
-        {menuItems.map(({ key, icon: IconComponent, label }) => (
+  if (isMobile) {
+    return (
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-2 flex justify-around items-center z-50">
+        {primaryMenuItems.map(({ key, icon: IconComponent }) => (
           <div
             key={key}
             onClick={() => setActiveContent(key)}
-            className={`${baseBtnClasses} mb-2 ${
+            className={`${baseBtnClasses} ${
               activeContent === key ? activeClass : ""
-            } ${!isSidebarOpen ? "justify-center" : ""} ${hoverClasses}`}
+            } ${hoverClasses}`}
           >
             <IconComponent
               className={`w-6 h-6 ${
                 activeContent === key ? "opacity-100" : "opacity-30"
               } fill-[#131010] ${iconGroupHoverClasses}`}
             />
-            {isSidebarOpen && showIconText && (
-              <span
-                className={`ml-2 ${
-                  activeContent === key
-                    ? "text-[#131010] text-opacity-100"
-                    : textColorClass
-                } ${spanGroupHoverClasses}`}
-              >
-                {label}
-              </span>
-            )}
           </div>
         ))}
-      </div>
-      {/* Opción Logout */}
-      <div className="absolute bottom-4 left-0 right-0 m-4 text-[#AF1740] opacity-60 flex justify-center items-center text-sm hover:scale-105 hover:opacity-100 transform transition duration-500">
         <div
-          className="flex items-center cursor-pointer"
-          onClick={() => navigate("/")}
+          onClick={() => setActiveContent("home")}
+          className="absolute bottom-6 bg-blue-500 p-4 rounded-full shadow-lg transform transition-transform duration-500"
         >
-          <LogoutIcon className="w-6 h-6 mr-2" />
-          {isSidebarOpen && showIconText && <span>Salir</span>}
+          <HomeIcon
+            className={`w-8 h-8 ${
+              activeContent === "home" ? "opacity-100" : "opacity-30"
+            } fill-white ${iconGroupHoverClasses}`}
+          />
         </div>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <motion.div
+      className={`animate-slideLeftFadeIn bg-white text-white ${
+        isSidebarOpen ? "w-52" : "w-28"
+      } transition-width duration-500 md:block`}
+      animate={{ width: isSidebarOpen ? 208 : 112 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="p-4 relative h-full">
+        {/* Encabezado */}
+        <SidebarHeader
+          isSidebarOpen={isSidebarOpen}
+          setActiveContent={setActiveContent}
+          showText={showText}
+        />
+
+        {/* Opciones */}
+        <div className="m-4 text-sm">
+          {menuItems.map(({ key, icon: IconComponent, label }) => (
+            <div
+              key={key}
+              onClick={() => setActiveContent(key)}
+              className={`${baseBtnClasses} mb-2 ${
+                activeContent === key ? activeClass : ""
+              } ${!isSidebarOpen ? "justify-center" : ""} ${hoverClasses}`}
+            >
+              <IconComponent
+                className={`w-6 h-6 ${
+                  activeContent === key ? "opacity-100" : "opacity-30"
+                } fill-[#131010] ${iconGroupHoverClasses}`}
+              />
+              {isSidebarOpen && showIconText && (
+                <span
+                  className={`ml-2 ${
+                    activeContent === key
+                      ? "text-[#131010] text-opacity-100"
+                      : textColorClass
+                  }`}
+                >
+                  {label}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="absolute bottom-4 left-4 right-4">
+          <div
+            onClick={() => navigate("/")}
+            className={`${baseBtnClasses} flex justify-center text-[#131010] hover:text-red-500`}
+          >
+            <FaSignOutAlt className="w-6 h-6 fill-[#131010] opacity-60 hover:text-red-500 group-hover:fill-red-500 group-hover:opacity-100 transition transform duration-500 " />
+            {isSidebarOpen && showIconText && (
+              <span className={`ml-2`}>Salir</span>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

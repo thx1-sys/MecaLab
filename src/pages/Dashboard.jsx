@@ -14,22 +14,19 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen bg-[#C4C4C4]/25">
-      <motion.div
-        className={`animate-slideLeftFadeIn bg-white text-white ${
-          isSidebarOpen ? "w-70" : "w-26"
-        } transition-width duration-500`}
-        animate={{ width: isSidebarOpen ? 192 : 105.6 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Sidebar
-          isSidebarOpen={isSidebarOpen}
-          setActiveContent={setActiveContent}
-          activeContent={activeContent}
-        />
-      </motion.div>
+      <Sidebar
+        isSidebarOpen={isSidebarOpen}
+        setActiveContent={setActiveContent}
+        activeContent={activeContent}
+      />
       <div className="flex-1 h-full flex flex-col">
         <header className="animate-slideDownFadeIn">
-          <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+          <Header
+            toggleSidebar={toggleSidebar}
+            isSidebarOpen={isSidebarOpen}
+            setActiveContent={setActiveContent}
+            activeContent={activeContent}
+          />
         </header>
         <div className="content flex-grow">
           <ContentRenderer activeContent={activeContent} />

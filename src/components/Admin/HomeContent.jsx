@@ -77,7 +77,7 @@ const HomeContent = () => {
           </motion.div>
           <div className="flex-grow p-4 w-full h-full">
             <motion.div
-              className="grid grid-cols-3 gap-4 h-full"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full"
               variants={containerVariants}
             >
               <motion.div variants={childVariants}>
