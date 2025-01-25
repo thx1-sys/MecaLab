@@ -5,6 +5,7 @@ import HeaderAdmin from "../Header/HeaderAdmin";
 import SummaryCard from "../Card/SummaryCard";
 import RequestsCard from "../Card/RequestsCard";
 import ActivityCard from "../Card/ActivityCard";
+import { fetchUser } from "../../services/userService"; // Import fetchUser
 
 const containerVariants = {
   hidden: {
@@ -36,17 +37,31 @@ const HomeContent = ({ setActiveContent }) => {
   const [showWelcome, setShowWelcome] = useState(
     !sessionStorage.getItem("welcomeShown")
   );
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    if (showWelcome) {
-      const timeout = setTimeout(() => {
+    const getUserData = async () => {
+      const userData = await fetchUser();
+      if (userData) {
+        setUsername(userData.username);
+      }
+    };
+
+    const fetchData = async () => {
+      await getUserData();
+
+      if (showWelcome) {
+        const timeout = setTimeout(() => {
+          setShowContent(true);
+          sessionStorage.setItem("welcomeShown", "true");
+        }, 5000);
+        return () => clearTimeout(timeout);
+      } else {
         setShowContent(true);
-        sessionStorage.setItem("welcomeShown", "true");
-      }, 5000); // Adjusted to wait for typing effect
-      return () => clearTimeout(timeout);
-    } else {
-      setShowContent(true);
-    }
+      }
+    };
+
+    fetchData();
   }, [showWelcome]);
 
   return (
@@ -63,7 +78,7 @@ const HomeContent = ({ setActiveContent }) => {
           transition={{ duration: 1 }}
         >
           <Typing
-            text={["Bienvenido, Paolo Vitali (Admin)"]}
+            text={[`Bienvenido, ${username} (Admin)`]}
             speed={50}
             eraseDelay={1000000}
           />
@@ -84,10 +99,10 @@ const HomeContent = ({ setActiveContent }) => {
                 <SummaryCard setActiveContent={setActiveContent} />
               </motion.div>
               <motion.div variants={childVariants}>
-                <RequestsCard />
+                <RequestsCard setActiveContent={setActiveContent} />
               </motion.div>
               <motion.div variants={childVariants}>
-                <ActivityCard />
+                <ActivityCard setActiveContent={setActiveContent} />
               </motion.div>
             </motion.div>
           </div>
