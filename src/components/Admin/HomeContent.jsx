@@ -31,7 +31,7 @@ const childVariants = {
   },
 };
 
-const HomeContent = () => {
+const HomeContent = ({ setActiveContent }) => {
   const [showContent, setShowContent] = useState(false);
   const [showWelcome, setShowWelcome] = useState(
     !sessionStorage.getItem("welcomeShown")
@@ -73,7 +73,7 @@ const HomeContent = () => {
       {showContent && (
         <>
           <motion.div variants={childVariants}>
-            <HeaderAdmin />
+            <HeaderAdmin setActiveContent={setActiveContent} />
           </motion.div>
           <div className="flex-grow p-4 w-full h-full">
             <motion.div
@@ -81,7 +81,7 @@ const HomeContent = () => {
               variants={containerVariants}
             >
               <motion.div variants={childVariants}>
-                <SummaryCard />
+                <SummaryCard setActiveContent={setActiveContent} />
               </motion.div>
               <motion.div variants={childVariants}>
                 <RequestsCard />

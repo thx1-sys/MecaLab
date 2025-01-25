@@ -9,7 +9,7 @@ const ButtonDashboard = ({ children }) => {
   );
 };
 
-const HeaderAdmin = () => {
+const HeaderAdmin = ({ setActiveContent }) => {
   const [username, setUsername] = useState("");
   const [currentDate, setCurrentDate] = useState("");
 
@@ -39,23 +39,35 @@ const HeaderAdmin = () => {
 
   return (
     <header className="m-4 h-auto flex flex-col md:flex-row justify-between px-4">
-      <div className="mb-4 md:mb-0">
+      <div className="my-4 md:mb-0">
         <h1 className="text-lg font-bold">
           Bienvenido, {username} (Admin) <span className="font-emoji">👋</span>
         </h1>
         <p className="text-sm">{currentDate}</p>
       </div>
       <div className="flex flex-wrap justify-center md:justify-end gap-2 w-full md:w-auto">
-        <div className="w-full md:w-auto hidden md:block">
+        <div
+          onClick={() => setActiveContent("requests")}
+          className="w-full md:w-auto hidden md:block"
+        >
           <ButtonDashboard>Ver solicitudes</ButtonDashboard>
         </div>
-        <div className="w-full md:w-auto hidden md:block">
+        <div
+          onClick={() => setActiveContent("machines")}
+          className="w-full md:w-auto hidden md:block"
+        >
           <ButtonDashboard>Ver Equipos</ButtonDashboard>
         </div>
-        <div className="w-full md:w-auto hidden md:block">
+        <div
+          onClick={() => setActiveContent("materials")}
+          className="w-full md:w-auto hidden md:block"
+        >
           <ButtonDashboard>Ver Materiales</ButtonDashboard>
         </div>
-        <div className="w-full md:w-auto hidden md:block">
+        <div
+          onClick={() => setActiveContent("users")}
+          className="w-full md:w-auto hidden md:block"
+        >
           <ButtonDashboard>Ver Usuarios</ButtonDashboard>
         </div>
       </div>

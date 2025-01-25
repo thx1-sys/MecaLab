@@ -3,10 +3,10 @@ import HomeContent from "../Admin/HomeContent";
 import RequestsContent from "../Admin/RequestsContent";
 import MaterialsContent from "../Admin/MaterialsContent";
 
-const ContentRenderer = ({ activeContent }) => {
+const ContentRenderer = ({ activeContent, setActiveContent }) => {
   switch (activeContent) {
     case "home":
-      return <HomeContent />;
+      return <HomeContent setActiveContent={setActiveContent} />;
     case "requests":
       return <RequestsContent />;
     case "report":

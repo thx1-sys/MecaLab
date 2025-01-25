@@ -28,8 +28,11 @@ const Dashboard = () => {
             activeContent={activeContent}
           />
         </header>
-        <div className="content flex-grow">
-          <ContentRenderer activeContent={activeContent} />
+        <div className="content flex-grow overflow-y-auto h-full ">
+          <ContentRenderer
+            activeContent={activeContent}
+            setActiveContent={setActiveContent}
+          />
         </div>
       </div>
     </div>
