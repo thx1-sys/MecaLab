@@ -11,13 +11,13 @@ import {
 import axios from "axios";
 import { Table, notification, Modal } from "antd";
 
-const MaterialsContent = () => {
-  const [materials, setMaterials] = useState([]);
+const MachineContent = () => {
+  const [machines, setMachines] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [filteredMaterials, setFilteredMaterials] = useState([]);
+  const [filteredMachines, setFilteredMachines] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [currentMaterial, setCurrentMaterial] = useState({
+  const [currentMachine, setCurrentMachine] = useState({
     name: "",
     description: "",
     total_quantity: 0,
@@ -36,14 +36,14 @@ const MaterialsContent = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    fetchMaterials();
+    fetchMachines();
   }, [pagination.current, pagination.pageSize, searchText]);
 
-  const fetchMaterials = async () => {
+  const fetchMachines = async () => {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_HOST_EXPRESS}/api/materials`,
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/machines`,
         {
           params: {
             search: searchText,
@@ -52,20 +52,20 @@ const MaterialsContent = () => {
           },
         }
       );
-      setMaterials(response.data.materials);
-      setFilteredMaterials(response.data.materials);
+      setMachines(response.data);
+      setFilteredMachines(response.data);
       setPagination({
         ...pagination,
-        total: response.data.total,
+        total: response.data.length,
       });
     } catch (error) {
-      console.error("Error al obtener materiales:", error);
+      console.error("Error al obtener máquinas:", error);
     }
     setIsLoading(false);
   };
 
   const handleSearch = () => {
-    fetchMaterials();
+    fetchMachines();
   };
 
   const handleSearchInputChange = (e) => {
@@ -80,7 +80,7 @@ const MaterialsContent = () => {
 
   const handleAdd = () => {
     setIsEditMode(false);
-    setCurrentMaterial({
+    setCurrentMachine({
       name: "",
       description: "",
       total_quantity: 0,
@@ -88,15 +88,15 @@ const MaterialsContent = () => {
     setIsModalVisible(true);
   };
 
-  const handleEdit = (material) => {
+  const handleEdit = (machine) => {
     setIsEditMode(true);
-    setCurrentMaterial(material);
+    setCurrentMachine(machine);
     setIsModalVisible(true);
   };
 
   const showDeleteConfirm = (id) => {
     Modal.confirm({
-      title: "¿Estás seguro de que quieres eliminar este material?",
+      title: "¿Estás seguro de que quieres eliminar esta máquina?",
       content: "Esta acción no se puede deshacer.",
       okText: "Sí",
       okType: "danger",
@@ -109,21 +109,21 @@ const MaterialsContent = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_HOST_EXPRESS}/api/materials/${id}`
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/machines/${id}`
       );
-      fetchMaterials();
-      showNotification("success", "Material eliminado con éxito");
+      fetchMachines();
+      showNotification("success", "Máquina eliminada con éxito");
     } catch (error) {
-      console.error("Error al eliminar material:", error);
-      showNotification("error", "Error al eliminar material");
+      console.error("Error al eliminar máquina:", error);
+      showNotification("error", "Error al eliminar máquina");
     }
   };
 
   const handleSave = async () => {
     const formData = new FormData();
-    formData.append("name", currentMaterial.name);
-    formData.append("description", currentMaterial.description);
-    formData.append("total_quantity", currentMaterial.total_quantity);
+    formData.append("name", currentMachine.name);
+    formData.append("description", currentMachine.description);
+    formData.append("total_quantity", currentMachine.total_quantity);
     if (file) {
       formData.append("image", file);
     }
@@ -131,38 +131,38 @@ const MaterialsContent = () => {
     try {
       if (isEditMode) {
         await axios.put(
-          `${import.meta.env.VITE_HOST_EXPRESS}/api/materials/update/${
-            currentMaterial.id
+          `${import.meta.env.VITE_HOST_EXPRESS}/api/machines/update/${
+            currentMachine.id
           }`,
           formData
         );
-        showNotification("success", "Material actualizado con éxito");
+        showNotification("success", "Máquina actualizada con éxito");
       } else {
         await axios.post(
-          `${import.meta.env.VITE_HOST_EXPRESS}/api/materials/add`,
+          `${import.meta.env.VITE_HOST_EXPRESS}/api/machines/add`,
           formData
         );
-        showNotification("success", "Material agregado con éxito");
+        showNotification("success", "Máquina agregada con éxito");
       }
-      fetchMaterials();
+      fetchMachines();
       setIsModalVisible(false);
     } catch (error) {
-      console.error("Error al guardar material:", error);
-      showNotification("error", "Error al guardar material");
+      console.error("Error al guardar máquina:", error);
+      showNotification("error", "Error al guardar máquina");
     }
   };
 
   const handleToggleEnable = async (id, isEnabled) => {
     try {
       await axios.patch(
-        `${import.meta.env.VITE_HOST_EXPRESS}/api/materials/toggle/${id}`,
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/machines/toggle/${id}`,
         { is_enabled: !isEnabled }
       );
-      fetchMaterials();
-      showNotification("success", "Estado del material actualizado con éxito");
+      fetchMachines();
+      showNotification("success", "Estado de la máquina actualizado con éxito");
     } catch (error) {
-      console.error("Error al actualizar el estado del material:", error);
-      showNotification("error", "Error al actualizar el estado del material");
+      console.error("Error al actualizar el estado de la máquina:", error);
+      showNotification("error", "Error al actualizar el estado de la máquina");
     }
   };
 
@@ -244,7 +244,7 @@ const MaterialsContent = () => {
         text ? (
           <img
             src={text}
-            alt="Material"
+            alt="Máquina"
             style={{ width: "50px", cursor: "pointer" }}
             onClick={() => handleImageClick(text)}
           />
@@ -289,13 +289,13 @@ const MaterialsContent = () => {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Administrar Materiales</h1>
+        <h1 className="text-xl font-bold">Administrar Máquinas</h1>
         <div className="flex space-x-4">
           <div className="flex space-x-2">
             <div className="relative">
               <input
                 type="text"
-                placeholder="Buscar materiales..."
+                placeholder="Buscar máquinas..."
                 value={searchText}
                 onChange={handleSearchInputChange}
                 onKeyPress={handleSearchKeyPress}
@@ -314,13 +314,13 @@ const MaterialsContent = () => {
             onClick={handleAdd}
           >
             <PlusOutlined />
-            <span>Agregar Material</span>
+            <span>Agregar Máquina</span>
           </button>
         </div>
       </div>
       <Table
         columns={columns}
-        dataSource={filteredMaterials}
+        dataSource={filteredMachines}
         loading={isLoading}
         rowKey="id"
         pagination={{
@@ -338,24 +338,24 @@ const MaterialsContent = () => {
       >
         <div className="bg-white p-4 rounded-lg w-1/2">
           <h2 className="text-xl mb-4">
-            {isEditMode ? "Editar Material" : "Agregar Material"}
+            {isEditMode ? "Editar Máquina" : "Agregar Máquina"}
           </h2>
           <input
             type="text"
             placeholder="Nombre"
-            value={currentMaterial.name}
+            value={currentMachine.name}
             onChange={(e) =>
-              setCurrentMaterial({ ...currentMaterial, name: e.target.value })
+              setCurrentMachine({ ...currentMachine, name: e.target.value })
             }
             className="w-full p-2 mb-4 border rounded-lg"
           />
           <input
             type="text"
             placeholder="Descripción"
-            value={currentMaterial.description}
+            value={currentMachine.description}
             onChange={(e) =>
-              setCurrentMaterial({
-                ...currentMaterial,
+              setCurrentMachine({
+                ...currentMachine,
                 description: e.target.value,
               })
             }
@@ -364,10 +364,10 @@ const MaterialsContent = () => {
           <input
             type="number"
             placeholder="Cantidad Total"
-            value={currentMaterial.total_quantity}
+            value={currentMachine.total_quantity}
             onChange={(e) =>
-              setCurrentMaterial({
-                ...currentMaterial,
+              setCurrentMachine({
+                ...currentMachine,
                 total_quantity: e.target.value,
               })
             }
@@ -427,10 +427,10 @@ const MaterialsContent = () => {
         onCancel={() => setIsImageModalVisible(false)}
         centered
       >
-        <img src={imageSrc} alt="Material" style={{ width: "100%" }} />
+        <img src={imageSrc} alt="Máquina" style={{ width: "100%" }} />
       </Modal>
     </div>
   );
 };
 
-export default MaterialsContent;
+export default MachineContent;

@@ -2,6 +2,9 @@ import React from "react";
 import HomeContent from "../Admin/HomeContent";
 import RequestsContent from "../Admin/RequestsContent";
 import MaterialsContent from "../Admin/MaterialsContent";
+import UsersContent from "../Admin/UsersContent";
+import SettingsContent from "../Admin/SettingsContent";
+import MachineContent from "../Admin/MachineContent";
 
 const ContentRenderer = ({ activeContent, setActiveContent }) => {
   switch (activeContent) {
@@ -12,13 +15,13 @@ const ContentRenderer = ({ activeContent, setActiveContent }) => {
     case "report":
       return <div>Report Content</div>;
     case "machines":
-      return <div>Machines Content</div>;
+      return <MachineContent />;
     case "materials":
       return <MaterialsContent />;
     case "users":
-      return <div>Users Content</div>;
+      return <UsersContent />;
     case "settings":
-      return <div>Settings Content</div>;
+      return <SettingsContent />;
     default:
       return <HomeContent />;
   }

@@ -1,6 +1,7 @@
+// Código principal dividido
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaSignOutAlt, FaCogs, FaBox, FaBars } from "react-icons/fa";
+import { FaBars, FaCogs, FaBox } from "react-icons/fa";
 import HomeIcon from "./Icons/HomeIcon";
 import MailIcon from "./Icons/MailIcon";
 import GraphIcon from "./Icons/GraphIcon";
@@ -14,7 +15,12 @@ import { fetchUser } from "../../services/userService";
 import UserImage from "../../assets/Img/Photo_Example_User.webp";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Modal, Dropdown, Menu } from "antd";
+import { Dropdown, Menu } from "antd";
+
+import MenuButton from "../Button/MenuButton";
+import MobileMenu from "../Menu/MobileMenu";
+import NotificationsModal from "../Modal/NotificationsModal";
+import ProfileSettingsModal from "../Modal/ProfileSettingsModalAdmin";
 
 const menuItems = [
   { key: "home", icon: HomeIcon, label: "Inicio" },
@@ -26,16 +32,6 @@ const menuItems = [
   { key: "settings", icon: SettingsIcon, label: "Ajustes" },
 ];
 
-const MenuButton = ({ label, onClick, icon: IconComponent }) => (
-  <button
-    onClick={onClick}
-    className="mt-2 p-2 bg-blue-500 text-white rounded w-full flex items-center justify-center gap-2"
-  >
-    <IconComponent className="w-5 h-5" />
-    {label}
-  </button>
-);
-
 const HeaderDashboard = ({
   toggleSidebar,
   isSidebarOpen,
@@ -45,14 +41,14 @@ const HeaderDashboard = ({
   const [username, setUsername] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState(UserImage);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm] = useState("");
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [latestRequests, setLatestRequests] = useState([]);
   const [isProfileSettingsVisible, setIsProfileSettingsVisible] =
     useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true); // Estado para controlar la visibilidad del header
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -69,7 +65,6 @@ const HeaderDashboard = ({
         if (!token) {
           throw new Error("Token not found");
         }
-
         const response = await axios.get(
           `${import.meta.env.VITE_HOST_EXPRESS}/api/notifications`,
           {
@@ -86,18 +81,31 @@ const HeaderDashboard = ({
 
     getUserData();
     fetchNotifications();
+    const interval = setInterval(fetchNotifications, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
-    const interval = setInterval(fetchNotifications, 60000); // Actualiza cada 1 minuto
-
-    return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
+  useEffect(() => {
+    const fetchLatestRequests = async () => {
+      try {
+        const token = sessionStorage.getItem("token") || Cookies.get("token");
+        if (!token) throw new Error("Token not found");
+        const response = await axios.get(
+          `${import.meta.env.VITE_HOST_EXPRESS}/api/requests/latest`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setLatestRequests(response.data);
+      } catch (error) {
+        console.error("Error fetching latest requests:", error);
+      }
+    };
+    fetchLatestRequests();
   }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
   const handleNotificationClick = async () => {
@@ -106,25 +114,19 @@ const HeaderDashboard = ({
       if (!token) {
         throw new Error("Token not found");
       }
-
       const response = await axios.get(
         `${import.meta.env.VITE_HOST_EXPRESS}/api/notifications`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setNotifications(response.data);
       setIsModalVisible(true);
-
       await axios.put(
         `${import.meta.env.VITE_HOST_EXPRESS}/api/notifications/read`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setUnreadNotifications(0);
@@ -137,32 +139,11 @@ const HeaderDashboard = ({
     item.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const fetchLatestRequests = async () => {
-    try {
-      const token = sessionStorage.getItem("token") || Cookies.get("token");
-      if (!token) throw new Error("Token not found");
-
-      const response = await axios.get(
-        `${import.meta.env.VITE_HOST_EXPRESS}/api/requests/latest`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setLatestRequests(response.data);
-    } catch (error) {
-      console.error("Error fetching latest requests:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchLatestRequests();
-  }, []);
-
   const handleProfileMenuClick = ({ key }) => {
     if (key === "settings") {
       setIsProfileSettingsVisible(true);
     } else if (key === "logout") {
-      // Implement logout functionality here
+      // Logout
     }
   };
 
@@ -175,7 +156,7 @@ const HeaderDashboard = ({
 
   return (
     <>
-      {isHeaderVisible && ( // Condición para mostrar u ocultar el header
+      {isHeaderVisible && (
         <header className="flex justify-between items-center bg-white w-full p-4 md:p-6">
           <div className="flex items-center">
             <button
@@ -233,102 +214,24 @@ const HeaderDashboard = ({
               />
             </Dropdown>
           </div>
-          {isMenuOpen && (
-            <motion.div
-              className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center space-y-6"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4 }}
-            >
-              {/* Botón para cerrar menú */}
-              <button
-                className="absolute top-4 right-4 text-white focus:outline-none"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-
-              {/* Links centrados */}
-              <div className="flex justify-center">
-                <ul className="flex flex-col space-y-6 pb-4 text-center">
-                  {filteredMenuItems.map(
-                    ({ key, icon: IconComponent, label }) => (
-                      <li key={key}>
-                        <button
-                          className={`text-2xl text-white/60 flex items-center justify-center gap-2 ${
-                            activeContent === key ? "text-white/100" : ""
-                          }`}
-                          onClick={() => {
-                            setActiveContent(key);
-                            setIsMenuOpen(false);
-                          }}
-                        >
-                          <IconComponent className="w-6 h-6" />
-                          {label}
-                        </button>
-                      </li>
-                    )
-                  )}
-                </ul>
-              </div>
-
-              {/* Botones de sesión */}
-              <div className="flex flex-col space-y-4 w-2/3">
-                <button
-                  className="border w-full px-4 py-2 rounded-lg text-white hover:bg-red-500 hover:scale-105 hover:border-red-500 transform transition duration-500 btn-shadow-rose"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Cerrar Sesión
-                </button>
-              </div>
-            </motion.div>
-          )}
-          <Modal
-            title="Solicitudes Recientes"
-            visible={isModalVisible}
-            onCancel={() => setIsModalVisible(false)}
-            footer={null}
-            centered
-          >
-            <ul className="space-y-2">
-              {latestRequests.map((request) => (
-                <li
-                  key={request.request_id}
-                  className="p-2 border-b border-gray-200"
-                >
-                  <div className="text-sm text-gray-700">
-                    {request.full_name} - {request.loan_type}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {new Date(request.request_date).toLocaleString()}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </Modal>
-          <Modal
-            title="Configuración del Perfil"
-            visible={isProfileSettingsVisible}
-            onCancel={() => setIsProfileSettingsVisible(false)}
-            footer={null}
-            centered
-          >
-            {/* Aquí puedes agregar el contenido del modal de configuración del perfil */}
-          </Modal>
         </header>
       )}
+      <MobileMenu
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        filteredMenuItems={filteredMenuItems}
+        activeContent={activeContent}
+        setActiveContent={setActiveContent}
+      />
+      <NotificationsModal
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        latestRequests={latestRequests}
+      />
+      <ProfileSettingsModal
+        isProfileSettingsVisible={isProfileSettingsVisible}
+        setIsProfileSettingsVisible={setIsProfileSettingsVisible}
+      />
     </>
   );
 };

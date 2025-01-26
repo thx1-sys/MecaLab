@@ -9,6 +9,7 @@ import UsersIcon from "./Icons/UsersIcon";
 import SettingsIcon from "./Icons/SettingsIcon";
 import { useMediaQuery } from "react-responsive";
 import { motion } from "framer-motion";
+import { Modal } from "antd";
 
 const menuItems = [
   { key: "home", icon: HomeIcon, label: "Inicio" },
@@ -25,6 +26,20 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   const navigate = useNavigate();
   const [showIconText, setShowIconText] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 767 });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    navigate("/");
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   useEffect(() => {
     if (isSidebarOpen) {
@@ -140,7 +155,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
         </div>
         <div className="absolute bottom-4 left-4 right-4">
           <div
-            onClick={() => navigate("/")}
+            onClick={showModal}
             className={`${baseBtnClasses} flex justify-center text-[#131010] hover:text-red-500`}
           >
             <FaSignOutAlt className="w-6 h-6 fill-[#131010] opacity-60 hover:text-red-500 group-hover:fill-red-500 group-hover:opacity-100 transition transform duration-500 " />
@@ -148,6 +163,20 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
               <span className={`ml-2`}>Salir</span>
             )}
           </div>
+          <Modal
+            title="Confirmación"
+            visible={isModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            centered
+            okText="Sí"
+            cancelText="No"
+            okButtonProps={{
+              style: { backgroundColor: "red", borderColor: "red" },
+            }}
+          >
+            <p>¿Estás seguro de que quieres salir?</p>
+          </Modal>
         </div>
       </div>
     </motion.div>
