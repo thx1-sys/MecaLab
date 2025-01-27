@@ -26,6 +26,13 @@ function LoginForm({
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = Cookies.get("token") || sessionStorage.getItem("token");
+    if (token) {
+      validateToken();
+    }
+  }, [navigate]);
+
+  useEffect(() => {
     if (error) {
       setIsButtonDisabled(true);
       const timer = setTimeout(() => {

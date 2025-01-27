@@ -5,6 +5,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 import LazyLoaderBlue from "./components/Loader/LazyLoaderBlue";
 import LazyLoaderRed from "./components/Loader/LazyLoaderRed";
 
@@ -55,11 +56,19 @@ function App() {
             <Route path="/login" element={<Login onLoad={handleImageLoad} />} />
             <Route
               path="/student-home"
-              element={<StudentHome onLoad={handleImageLoad} />}
+              element={
+                <PrivateRoute>
+                  <StudentHome onLoad={handleImageLoad} />
+                </PrivateRoute>
+              }
             />
             <Route
               path="/dashboardadmin"
-              element={<Dashboard onLoad={handleImageLoad} />}
+              element={
+                <PrivateRoute>
+                  <Dashboard onLoad={handleImageLoad} />
+                </PrivateRoute>
+              }
             />
           </Routes>
         )}

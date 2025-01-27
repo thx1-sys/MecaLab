@@ -28,6 +28,7 @@ const MaterialForm = ({ onBack }) => {
   const [selectedQuantity, setSelectedQuantity] = useState("");
   const [requestDate, setRequestDate] = useState("");
   const [expectedReturnDate, setExpectedReturnDate] = useState("");
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
 
   // Define los estados para los datos de StepContextData
   const [reason, setReason] = useState({ value: "", label: "" });
@@ -75,6 +76,8 @@ const MaterialForm = ({ onBack }) => {
             setRequestDate={setRequestDate}
             expectedReturnDate={expectedReturnDate}
             setExpectedReturnDate={setExpectedReturnDate}
+            selectedMaterials={selectedMaterials}
+            setSelectedMaterials={setSelectedMaterials}
             handleNextStep={handleNextStep}
             handlePreviousStep={handlePreviousStep}
           />
@@ -111,6 +114,7 @@ const MaterialForm = ({ onBack }) => {
             subject={subject}
             teacher={teacher}
             group={group}
+            selectedMaterials={selectedMaterials}
             handlePreviousStep={handlePreviousStep}
             onBack={onBack}
           />

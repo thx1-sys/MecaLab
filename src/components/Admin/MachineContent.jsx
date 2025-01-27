@@ -20,7 +20,6 @@ const MachineContent = () => {
   const [currentMachine, setCurrentMachine] = useState({
     name: "",
     description: "",
-    total_quantity: 0,
   });
   const [file, setFile] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -83,7 +82,6 @@ const MachineContent = () => {
     setCurrentMachine({
       name: "",
       description: "",
-      total_quantity: 0,
     });
     setIsModalVisible(true);
   };
@@ -123,10 +121,16 @@ const MachineContent = () => {
     const formData = new FormData();
     formData.append("name", currentMachine.name);
     formData.append("description", currentMachine.description);
-    formData.append("total_quantity", currentMachine.total_quantity);
     if (file) {
       formData.append("image", file);
     }
+
+    // Log de ejemplo para ver qué se está enviando
+    console.log("Datos del formulario:", {
+      name: currentMachine.name,
+      description: currentMachine.description,
+      file,
+    });
 
     try {
       if (isEditMode) {
@@ -227,26 +231,18 @@ const MachineContent = () => {
       key: "description",
     },
     {
-      title: "Cantidad Total",
-      dataIndex: "total_quantity",
-      key: "total_quantity",
-    },
-    {
-      title: "Cantidad Disponible",
-      dataIndex: "available_quantity",
-      key: "available_quantity",
-    },
-    {
       title: "Imagen",
       dataIndex: "image_url",
       key: "image_url",
       render: (text) =>
         text ? (
           <img
-            src={text}
+            src={`${import.meta.env.VITE_HOST_EXPRESS}${text}`}
             alt="Máquina"
             style={{ width: "50px", cursor: "pointer" }}
-            onClick={() => handleImageClick(text)}
+            onClick={() =>
+              handleImageClick(`${import.meta.env.VITE_HOST_EXPRESS}${text}`)
+            }
           />
         ) : (
           "No Image"
@@ -357,18 +353,6 @@ const MachineContent = () => {
               setCurrentMachine({
                 ...currentMachine,
                 description: e.target.value,
-              })
-            }
-            className="w-full p-2 mb-4 border rounded-lg"
-          />
-          <input
-            type="number"
-            placeholder="Cantidad Total"
-            value={currentMachine.total_quantity}
-            onChange={(e) =>
-              setCurrentMachine({
-                ...currentMachine,
-                total_quantity: e.target.value,
               })
             }
             className="w-full p-2 mb-4 border rounded-lg"

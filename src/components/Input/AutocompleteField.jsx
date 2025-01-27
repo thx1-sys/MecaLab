@@ -77,7 +77,7 @@ const AutocompleteField = ({
                   "linear-gradient(to bottom, rgba(217, 217, 217, 0.1), rgba(115, 115, 115, 0.2))",
                 border: "1px solid #999999",
                 borderRadius: "8px",
-                color: "white", // Asegúrate de que el color del texto sea blanco
+                color: "white",
               }}
             >
               {children}
@@ -116,14 +116,19 @@ const AutocompleteField = ({
             "& .MuiAutocomplete-noOptions": {
               color: "white",
             },
-            "&::-webkit-scrollbar": {
-              width: "8px",
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              borderRadius: "4px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(255, 255, 255, 0.4)",
-              borderRadius: "4px",
+            "& .MuiAutocomplete-listbox": {
+              maxHeight: 200, // Adjust the max height as needed
+              overflowY: "auto",
+              paddingRight: "0.2rem",
+              "&::-webkit-scrollbar": {
+                width: "8px",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                borderRadius: "4px",
+              },
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "rgba(255, 255, 255, 0.4)",
+                borderRadius: "4px",
+              },
             },
           }}
         />

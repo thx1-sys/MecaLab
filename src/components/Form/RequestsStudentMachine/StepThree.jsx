@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Modal } from "antd";
 import ChevronLeftIcon from "../Icons/ChevronLeftIcon";
 import SendIcon from "../Icons/SendIcon";
 import "./Loader.css";
@@ -14,21 +13,25 @@ const StepThree = ({
   phoneNumber,
   career,
   semester,
+  selectedMachine,
   requestDate,
-  expectedReturnDate,
+  startTime,
+  duration,
   reason,
   subject,
   teacher,
   group,
-  selectedMaterials,
   handlePreviousStep,
   onBack,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  console.log("selectedMaterials:", selectedMaterials);
+  const formatDateTimeForMySQL = (dateObj) => {
+    const offset = dateObj.getTimezoneOffset() * 60000;
+    const localTime = new Date(dateObj.getTime() - offset);
+    return localTime.toISOString().slice(0, 19).replace("T", " ");
+  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -38,59 +41,57 @@ const StepThree = ({
         throw new Error("No token found");
       }
 
-      // Prepare materials data for the request
-      const materials = selectedMaterials.map((material) => ({
-        material_id: material.material_id,
-        quantity: material.quantity,
-      }));
+      const startDateObj = new Date(`${requestDate}T${startTime}`);
+      const endDateObj = new Date(startDateObj.getTime() + duration * 3600000);
 
-      // Submit the request
-      const requestResponse = await axios.post(
-        `${import.meta.env.VITE_HOST_EXPRESS}/api/requests`,
-        {
-          student_id: studentId,
-          full_name: fullName,
-          institutional_email: institutionalEmail,
-          phone_number: phoneNumber,
-          career,
-          semester,
-          request_date: requestDate,
-          expected_return_date: expectedReturnDate,
-          request_reason: reason.label,
-          subject: subject.label,
-          teacher: teacher.label,
-          group: group.label,
-          loan_type: "Material",
-          materials,
-          material_quantity: materials.reduce(
-            (total, m) => total + m.quantity,
-            0
-          ), // Sum of all material quantities
-        },
+      const startMySQL = formatDateTimeForMySQL(startDateObj);
+      const endMySQL = formatDateTimeForMySQL(endDateObj);
+
+      const requestData = {
+        machine_id: selectedMachine.value,
+        start_time: startMySQL,
+        end_time: endMySQL,
+        student_id: studentId,
+        full_name: fullName,
+        institutional_email: institutionalEmail,
+        phone_number: phoneNumber,
+        career,
+        semester,
+        request_date: requestDate,
+        expected_return_date: requestDate,
+        selected_material: selectedMachine.label,
+        material_quantity: 1,
+        request_reason: reason.label,
+        subject: subject.label,
+        teacher: teacher.label,
+        group: group.label,
+        loan_type: "Máquina",
+      };
+
+      await axios.post(
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/machines/rent`,
+        requestData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Pasa el token como Bearer
           },
         }
       );
 
-      // Update material quantities
-      for (const material of materials) {
-        await axios.put(
-          `${import.meta.env.VITE_HOST_EXPRESS}/api/materials/${
-            material.material_id
-          }/update-quantity`,
-          { used_quantity: material.quantity },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      }
-
-      // Clear session storage
-      sessionStorage.clear();
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("studentId");
+      sessionStorage.removeItem("institutionalEmail");
+      sessionStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("career");
+      sessionStorage.removeItem("semester");
+      sessionStorage.removeItem("selectedMachine");
+      sessionStorage.removeItem("requestDate");
+      sessionStorage.removeItem("startTime");
+      sessionStorage.removeItem("duration");
+      sessionStorage.removeItem("reason");
+      sessionStorage.removeItem("subject");
+      sessionStorage.removeItem("teacher");
+      sessionStorage.removeItem("group");
 
       setIsSubmitted(true);
     } catch (error) {
@@ -98,17 +99,6 @@ const StepThree = ({
     } finally {
       setIsLoading(false);
     }
-  };
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
   };
 
   return (
@@ -154,23 +144,21 @@ const StepThree = ({
               <label className="block text-gray-400">Número de control:</label>
               <p className="text-white">{studentId}</p>
             </div>
-            <div className="mt-4 flex flex-col items-center">
-              <label className="block text-gray-400">Materiales:</label>
-              <button
-                className="w-1/2 opacity-80 text-center bg-transparent text-white underline hover:scale-105 hover:opacity-100 hover:no-underline tansition duration-500 flex items-center justify-center"
-                type="button"
-                onClick={showModal}
-              >
-                Ver Materiales
-              </button>
+            <div className="mt-4">
+              <label className="block text-gray-400">Equipo:</label>
+              <p className="text-white">{selectedMachine.label}</p>
             </div>
             <div className="mt-4">
-              <label className="block text-gray-400">Fecha de inicio:</label>
+              <label className="block text-gray-400">Fecha de solicitud:</label>
               <p className="text-white">{requestDate}</p>
             </div>
             <div className="mt-4">
-              <label className="block text-gray-400">Fecha final:</label>
-              <p className="text-white">{expectedReturnDate}</p>
+              <label className="block text-gray-400">Hora de inicio:</label>
+              <p className="text-white">{startTime}</p>
+            </div>
+            <div className="mt-4">
+              <label className="block text-gray-400">Duración (horas):</label>
+              <p className="text-white">{duration}</p>
             </div>
             <div className="mt-4">
               <label className="block text-gray-400">Motivo:</label>
@@ -238,29 +226,6 @@ const StepThree = ({
           </motion.button>
         </div>
       )}
-
-      <Modal
-        title="Materiales Seleccionados"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        centered // Add this line to center the modal
-        footer={[]}
-      >
-        <ul className="space-y-2">
-          {selectedMaterials.map((material, index) => (
-            <li
-              key={index}
-              className="flex justify-between items-center p-2 bg-gray-100 rounded-md"
-            >
-              <span>{material.label}</span>
-              <span className="font-semibold">
-                Cantidad: {material.quantity}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </Modal>
     </motion.div>
   );
 };

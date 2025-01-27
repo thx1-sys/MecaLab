@@ -10,6 +10,7 @@ import SettingsIcon from "./Icons/SettingsIcon";
 import { useMediaQuery } from "react-responsive";
 import { motion } from "framer-motion";
 import { Modal } from "antd";
+import Cookies from "js-cookie";
 
 const menuItems = [
   { key: "home", icon: HomeIcon, label: "Inicio" },
@@ -33,6 +34,13 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
   };
 
   const handleOk = () => {
+    // Limpiar el sessionStorage
+    sessionStorage.clear();
+    // Limpiar el localStorage
+    localStorage.clear();
+    // Borrar las cookies
+    Cookies.remove("token");
+
     setIsModalVisible(false);
     navigate("/");
   };
