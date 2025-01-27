@@ -62,12 +62,14 @@ const StepTwo = ({
           },
         }
       );
-      const materialsData = response.data.materials.map((material) => ({
-        value: material.id,
-        label: material.name,
-        image_url: material.image_url,
-        available_quantity: material.available_quantity,
-      }));
+      const materialsData = response.data.materials
+        .filter((material) => material.available_quantity > 0) // Filtrar materiales con cantidad disponible mayor a 0
+        .map((material) => ({
+          value: material.id,
+          label: material.name,
+          image_url: material.image_url,
+          available_quantity: material.available_quantity,
+        }));
       setMaterials(materialsData);
     } catch (error) {
       console.error("Error al obtener materiales:", error);

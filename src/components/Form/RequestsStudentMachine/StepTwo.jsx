@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DateInputField from "../../Input/DateInputField";
+import TimeInputField from "../../Input/TimeInputField";
+import DurationInputField from "../../Input/DurationInputField";
 import ChevronRightIcon from "../Icons/ChevronRightIcon";
 import ChevronLeftIcon from "../Icons/ChevronLeftIcon";
 import AutocompleteField from "../../Input/AutocompleteField";
 import axios from "axios";
-import { Modal } from "antd";
+import { Modal, notification } from "antd";
+import Cookies from "js-cookie";
 
 const StepTwo = ({
   selectedMachine,
@@ -23,6 +26,7 @@ const StepTwo = ({
   const [machineInfo, setMachineInfo] = useState(null);
   const [isImageModalVisible, setIsImageModalVisible] = useState(false);
   const [errors, setErrors] = useState({});
+  const [availability, setAvailability] = useState(null);
 
   useEffect(() => {
     fetchMachines();
@@ -39,6 +43,12 @@ const StepTwo = ({
     if (storedStartTime) setStartTime(storedStartTime);
     if (storedDuration) setDuration(storedDuration);
   }, []);
+
+  useEffect(() => {
+    if (selectedMachine && startTime && duration) {
+      checkAvailability();
+    }
+  }, [selectedMachine, startTime, duration]);
 
   const fetchMachines = async (search = "") => {
     try {
@@ -61,6 +71,63 @@ const StepTwo = ({
     }
   };
 
+  const checkAvailability = async () => {
+    try {
+      const token = sessionStorage.getItem("token") || Cookies.get("token"); // Obtener el token de autenticación
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const startDateTime = `${requestDate}T${startTime}`;
+      const endDateTime = `${requestDate}T${calculateEndTime(
+        startTime,
+        duration
+      )}`;
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/machines/check-availability`,
+        {
+          machine_id: selectedMachine.value,
+          start_time: startDateTime,
+          end_time: endDateTime,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setAvailability(response.data.available);
+      if (!response.data.available) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          availability: response.data.message,
+        }));
+        notification.error({
+          message: "Error",
+          description: response.data.message,
+          placement: "bottomRight",
+        });
+      } else {
+        setErrors((prevErrors) => {
+          const { availability, ...rest } = prevErrors;
+          return rest;
+        });
+      }
+    } catch (error) {
+      console.error("Error al verificar disponibilidad:", error);
+    }
+  };
+
+  const calculateEndTime = (startTime, duration) => {
+    const [hours, minutes] = startTime.split(":").map(Number);
+    const endHours = hours + parseInt(duration, 10);
+    return `${String(endHours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}`;
+  };
+
   const validate = () => {
     const newErrors = {};
 
@@ -80,6 +147,8 @@ const StepTwo = ({
       newErrors.requestDate = "La fecha de solicitud es obligatoria";
     if (!startTime) newErrors.startTime = "La hora de inicio es obligatoria";
     if (!duration) newErrors.duration = "La duración es obligatoria";
+    if (availability === false)
+      newErrors.availability = "La máquina ya está reservada en ese horario";
 
     return newErrors;
   };
@@ -88,6 +157,11 @@ const StepTwo = ({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      notification.error({
+        message: "Error",
+        description: "Por favor, corrige los errores antes de continuar.",
+        placement: "bottomRight",
+      });
     } else {
       setErrors({});
       // Guardar los datos en sessionStorage
@@ -185,59 +259,31 @@ const StepTwo = ({
               />
             </motion.div>
 
-            <motion.div
-              className="col-span-2 sm:col-span-1"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.5 }}
-            >
-              <div className="flex flex-col">
-                <label htmlFor="start-time" className="text-white">
-                  Hora de inicio
-                </label>
-                <input
-                  type="time"
-                  id="start-time"
-                  name="start-time"
-                  value={startTime}
-                  onChange={(e) => {
-                    setStartTime(e.target.value);
-                    sessionStorage.setItem("startTime", e.target.value);
-                  }}
-                  className="mt-1 p-2 rounded-md"
-                />
-                {errors.startTime && (
-                  <span className="text-red-500">{errors.startTime}</span>
-                )}
-              </div>
-            </motion.div>
+            <TimeInputField
+              label="Hora de inicio"
+              name="start-time"
+              id="start-time"
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+                sessionStorage.setItem("startTime", e.target.value);
+              }}
+              error={errors.startTime}
+              delay={1.5}
+            />
 
-            <motion.div
-              className="col-span-2 sm:col-span-1"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 1.75 }}
-            >
-              <div className="flex flex-col">
-                <label htmlFor="duration" className="text-white">
-                  Duración (horas)
-                </label>
-                <input
-                  type="number"
-                  id="duration"
-                  name="duration"
-                  value={duration}
-                  onChange={(e) => {
-                    setDuration(e.target.value);
-                    sessionStorage.setItem("duration", e.target.value);
-                  }}
-                  className="mt-1 p-2 rounded-md"
-                />
-                {errors.duration && (
-                  <span className="text-red-500">{errors.duration}</span>
-                )}
-              </div>
-            </motion.div>
+            <DurationInputField
+              label="Duración (horas)"
+              name="duration"
+              id="duration"
+              value={duration}
+              onChange={(e) => {
+                setDuration(e.target.value);
+                sessionStorage.setItem("duration", e.target.value);
+              }}
+              error={errors.duration}
+              delay={1.75}
+            />
           </div>
         </motion.form>
 
@@ -256,7 +302,7 @@ const StepTwo = ({
           <motion.button
             className="py-2 px-4 btn-confirm-no bg-transparent text-white border rounded-lg hover:bg-white hover:text-black transition duration-500 flex items-center"
             type="button"
-            onClick={handlePreviousStep}
+            onClick={handleBack}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 3 }}

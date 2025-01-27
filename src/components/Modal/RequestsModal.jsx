@@ -2,14 +2,16 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { format } from "date-fns";
 import "./RequestsModal.css";
 import CloseIcon from "../svg/CloseIcon";
+import MaterialsModal from "./MaterialsModal";
 
 function RequestsModal({ onClose, show }) {
   const [solicitudes, setSolicitudes] = useState([]);
   const [selectedSolicitud, setSelectedSolicitud] = useState(null);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
+  const [showMaterialsModal, setShowMaterialsModal] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -40,7 +42,7 @@ function RequestsModal({ onClose, show }) {
         }
       );
       const sortedSolicitudes = response.data.sort(
-        (a, b) => new Date(a.request_date) - new Date(b.request_date)
+        (a, b) => new Date(b.request_date) - new Date(a.request_date)
       );
       setSolicitudes(sortedSolicitudes);
     } catch (error) {
@@ -48,9 +50,16 @@ function RequestsModal({ onClose, show }) {
     }
   };
 
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+  const formatDateTime = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    };
+    return new Date(dateString).toLocaleString("es-ES", options);
   };
 
   const getStatusText = (status) => {
@@ -85,10 +94,24 @@ function RequestsModal({ onClose, show }) {
 
   const handleViewMore = (solicitud) => {
     setSelectedSolicitud(solicitud);
+    if (solicitud.loan_type === "Material") {
+      setSelectedMaterials(solicitud.materials || []);
+    } else {
+      setSelectedMaterials([]);
+    }
   };
 
   const handleCloseDetails = () => {
     setSelectedSolicitud(null);
+    setSelectedMaterials([]);
+  };
+
+  const handleOpenMaterialsModal = () => {
+    setShowMaterialsModal(true);
+  };
+
+  const handleCloseMaterialsModal = () => {
+    setShowMaterialsModal(false);
   };
 
   return (
@@ -128,6 +151,9 @@ function RequestsModal({ onClose, show }) {
                       Fecha de Solicitud
                     </th>
                     <th className="py-2 px-2 md:px-4 border-b border-white border-opacity-20">
+                      Tipo
+                    </th>
+                    <th className="py-2 px-2 md:px-4 border-b border-white border-opacity-20">
                       Estado
                     </th>
                     <th className="py-2 px-2 md:px-4 border-b border-white border-opacity-20">
@@ -138,7 +164,7 @@ function RequestsModal({ onClose, show }) {
                 <tbody>
                   {solicitudes.map((solicitud) => (
                     <tr
-                      key={solicitud.id}
+                      key={solicitud.request_id}
                       className="border-b border-white border-opacity-20 hover:bg-white hover:bg-opacity-5 transition duration-300"
                     >
                       <td className="py-2 px-2 md:px-4">
@@ -148,7 +174,10 @@ function RequestsModal({ onClose, show }) {
                         {solicitud.full_name}
                       </td>
                       <td className="py-2 px-2 md:px-4">
-                        {formatDate(solicitud.request_date)}
+                        {formatDateTime(solicitud.request_date)}
+                      </td>
+                      <td className="py-2 px-2 md:px-4">
+                        {solicitud.loan_type}
                       </td>
                       <td
                         className={`py-2 px-2 md:px-4 ${getStatusClass(
@@ -187,27 +216,16 @@ function RequestsModal({ onClose, show }) {
                       </button>
                     </div>
                     <div className="mb-2 text-white">
-                      <span className="font-semibold">Fechas:</span>
-                      <div>
-                        {format(new Date(solicitud.request_date), "dd/MM/yyyy")}{" "}
-                        -{" "}
-                        {format(
-                          new Date(solicitud.expected_return_date),
-                          "dd/MM/yyyy"
-                        )}
-                      </div>
+                      <span className="font-semibold">Nombre:</span>{" "}
+                      {solicitud.full_name}
                     </div>
                     <div className="mb-2 text-white">
-                      <span className="font-semibold">Material:</span>{" "}
-                      {solicitud.selected_material}
+                      <span className="font-semibold">Fecha de Solicitud:</span>{" "}
+                      {formatDateTime(solicitud.request_date)}
                     </div>
                     <div className="mb-2 text-white">
-                      <span className="font-semibold">Cantidad:</span>{" "}
-                      {solicitud.material_quantity}
-                    </div>
-                    <div className="mb-2 text-white">
-                      <span className="font-semibold">Motivo:</span>{" "}
-                      {solicitud.request_reason}
+                      <span className="font-semibold">Tipo:</span>{" "}
+                      {solicitud.loan_type}
                     </div>
                     <div className="mb-2 text-white">
                       <span className="font-semibold">Estado:</span>{" "}
@@ -263,7 +281,7 @@ function RequestsModal({ onClose, show }) {
             <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-center text-white">
               Detalles de la Solicitud
             </h2>
-            <div className="text-white text-sm md:text-base grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="text-white text-sm md:text-base space-y-2">
               <p>
                 <strong>ID:</strong> {selectedSolicitud.request_id}
               </p>
@@ -285,18 +303,11 @@ function RequestsModal({ onClose, show }) {
               </p>
               <p>
                 <strong>Fecha de Solicitud:</strong>{" "}
-                {formatDate(selectedSolicitud.request_date)}
+                {formatDateTime(selectedSolicitud.request_date)}
               </p>
               <p>
                 <strong>Fecha de Devolución Esperada:</strong>{" "}
-                {formatDate(selectedSolicitud.expected_return_date)}
-              </p>
-              <p>
-                <strong>Material Solicitado:</strong>{" "}
-                {selectedSolicitud.selected_material}
-              </p>
-              <p>
-                <strong>Cantidad:</strong> {selectedSolicitud.material_quantity}
+                {formatDateTime(selectedSolicitud.expected_return_date)}
               </p>
               <p>
                 <strong>Motivo:</strong> {selectedSolicitud.request_reason}
@@ -311,6 +322,9 @@ function RequestsModal({ onClose, show }) {
                 <strong>Grupo:</strong> {selectedSolicitud.group}
               </p>
               <p>
+                <strong>Tipo:</strong> {selectedSolicitud.loan_type}
+              </p>
+              <p>
                 <strong>Estado:</strong>{" "}
                 <span
                   className={getStatusClass(selectedSolicitud.request_status)}
@@ -318,16 +332,48 @@ function RequestsModal({ onClose, show }) {
                   {getStatusText(selectedSolicitud.request_status)}
                 </span>
               </p>
+              {selectedSolicitud.loan_type === "Material" && (
+                <div className="flex justify-between">
+                  <button
+                    className="w-full mt-4 md:mt-6 btn-change-blue py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
+                    onClick={handleOpenMaterialsModal}
+                  >
+                    Ver Materiales Solicitados
+                  </button>
+                  {/* <button
+                    className="w-full mt-4 md:mt-6 btn-change-blue py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
+                    onClick={handleCloseDetails}
+                  >
+                    Cerrar
+                  </button> */}
+                </div>
+              )}
+              {selectedSolicitud.loan_type === "Máquina" && (
+                <div className="space-y-2">
+                  <p>
+                    <strong>Equipo Solicitado:</strong>{" "}
+                    {selectedSolicitud.selected_material}
+                  </p>
+                  <p>
+                    <strong>Hora de Inicio:</strong>{" "}
+                    {formatDateTime(selectedSolicitud.start_time)}
+                  </p>
+                  <p>
+                    <strong>Hora de Fin:</strong>{" "}
+                    {formatDateTime(selectedSolicitud.end_time)}
+                  </p>
+                </div>
+              )}
             </div>
-            <button
-              className="mt-4 md:mt-6 btn-change-blue w-full py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
-              onClick={handleCloseDetails}
-            >
-              Cerrar
-            </button>
           </motion.div>
         </motion.div>
       )}
+
+      <MaterialsModal
+        show={showMaterialsModal}
+        onClose={handleCloseMaterialsModal}
+        materials={selectedMaterials}
+      />
     </AnimatePresence>
   );
 }

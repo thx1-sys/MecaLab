@@ -4,7 +4,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Modal } from "antd";
 import ChevronLeftIcon from "../Icons/ChevronLeftIcon";
+import HomeIcon from "../Icons/HomeIcon";
 import SendIcon from "../Icons/SendIcon";
+import confirmationImage from "../../../assets/Img/Img_10.png";
 import "./Loader.css";
 
 const StepThree = ({
@@ -225,6 +227,14 @@ const StepThree = ({
           <h2 className="text-2xl font-bold text-center text-white mt-4">
             Solicitud enviada
           </h2>
+          <motion.img
+            src={confirmationImage}
+            alt="Envio exitoso"
+            className="w-48 h-48 mt-4"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          />
           <motion.button
             className="py-2 px-4 btn-confirm-no bg-transparent text-white border rounded-lg hover:bg-white hover:text-black transition duration-500 flex items-center w-40 justify-center mt-4"
             type="button"
@@ -233,8 +243,8 @@ const StepThree = ({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 1 }}
           >
-            <ChevronLeftIcon className="w-6 h-6" />
-            <span className="ml-2">Regresar</span>
+            <HomeIcon className="w-6 h-6" />
+            <span className="ml-2">Inicio</span>
           </motion.button>
         </div>
       )}

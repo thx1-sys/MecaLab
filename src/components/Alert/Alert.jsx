@@ -8,7 +8,7 @@ const Alert = ({ message }) => {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -50, opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed w-full top-4 left-0 right-0 z-50 flex justify-center items-center"
+      className="absolute w-full top-4 left-0 right-0 z-50 flex justify-center items-center"
       role="alert"
     >
       <div className="flex items-center py-4 px-10 mb-4 text-sm lg:text-lg text-red-500 rounded-lg bg-white">
