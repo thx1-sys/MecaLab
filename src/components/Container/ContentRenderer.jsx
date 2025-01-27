@@ -5,6 +5,7 @@ import MaterialsContent from "../Admin/MaterialsContent";
 import UsersContent from "../Admin/UsersContent";
 import SettingsContent from "../Admin/SettingsContent";
 import MachineContent from "../Admin/MachineContent";
+import ReportContent from "../Admin/ReportContent";
 
 const ContentRenderer = ({ activeContent, setActiveContent }) => {
   switch (activeContent) {
@@ -13,7 +14,7 @@ const ContentRenderer = ({ activeContent, setActiveContent }) => {
     case "requests":
       return <RequestsContent />;
     case "report":
-      return <div>Report Content</div>;
+      return <ReportContent />;
     case "machines":
       return <MachineContent />;
     case "materials":

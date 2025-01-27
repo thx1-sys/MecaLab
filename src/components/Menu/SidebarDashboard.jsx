@@ -153,7 +153,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
                     activeContent === key
                       ? "text-[#131010] text-opacity-100"
                       : textColorClass
-                  }`}
+                  } ${spanGroupHoverClasses}`}
                 >
                   {label}
                 </span>
@@ -168,7 +168,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
           >
             <FaSignOutAlt className="w-6 h-6 fill-[#131010] opacity-60 hover:text-red-500 group-hover:fill-red-500 group-hover:opacity-100 transition transform duration-500 " />
             {isSidebarOpen && showIconText && (
-              <span className={`ml-2`}>Salir</span>
+              <span className={`ml-2 ${spanGroupHoverClasses}`}>Salir</span>
             )}
           </div>
           <Modal

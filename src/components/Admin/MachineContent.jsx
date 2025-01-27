@@ -125,13 +125,6 @@ const MachineContent = () => {
       formData.append("image", file);
     }
 
-    // Log de ejemplo para ver qué se está enviando
-    console.log("Datos del formulario:", {
-      name: currentMachine.name,
-      description: currentMachine.description,
-      file,
-    });
-
     try {
       if (isEditMode) {
         await axios.put(

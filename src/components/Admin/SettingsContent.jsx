@@ -7,11 +7,22 @@ import {
 } from "@ant-design/icons";
 import axios from "axios";
 import { Table, notification, Modal, Input, Button } from "antd";
+import { motion } from "framer-motion";
 
 // Configurar la posición de las notificaciones
 notification.config({
   placement: "bottomRight",
 });
+
+const StyledButton = ({ icon, label, onClick }) => (
+  <button
+    className="flex items-center justify-center h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 hover:scale-105 hover:bg-[#0B192C] hover:text-white hover:shadow-lg"
+    onClick={onClick}
+  >
+    {icon}
+    {label && <span className="ml-2">{label}</span>}
+  </button>
+);
 
 const Materias = () => {
   const [data, setData] = useState([]);
@@ -64,6 +75,7 @@ const Materias = () => {
       okType: "danger",
       cancelText: "No",
       onOk: () => handleDelete(id),
+      centered: true,
     });
   };
 
@@ -110,41 +122,59 @@ const Materias = () => {
       title: "Acciones",
       key: "actions",
       render: (_, record) => (
-        <div className="flex space-x-2">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
-          <Button
-            icon={<DeleteOutlined />}
+        <div className="flex justify-center space-x-2">
+          <button
+            className="text-blue-500 border border-blue-500 rounded px-2 py-1 transition duration-500 transform hover:bg-blue-500 hover:text-white"
+            onClick={() => handleEdit(record)}
+          >
+            <EditOutlined />
+          </button>
+          <button
+            className="text-red-500 border border-red-500 rounded px-2 py-1 transition duration-500 transform hover:bg-red-500 hover:text-white"
             onClick={() => handleDeleteConfirm(record.id)}
-          />
+          >
+            <DeleteOutlined />
+          </button>
         </div>
       ),
+      width: 150,
     },
   ];
 
   return (
-    <div className="p-6">
+    <motion.div
+      className=""
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Administrar Materias</h1>
-        <div className="flex space-x-4">
+        <div className="flex space-x-2">
           <Input
             placeholder="Buscar materias..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onPressEnter={handleSearch}
-            className="w-64"
+            className="w-64 h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 focus:scale-105 focus:shadow-lg"
           />
-          <Button icon={<SearchOutlined />} onClick={handleSearch} />
-          <Button icon={<PlusOutlined />} onClick={handleAdd}>
-            Agregar Materia
-          </Button>
+          <StyledButton icon={<SearchOutlined />} onClick={handleSearch} />
+          <StyledButton
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            label="Agregar Materia"
+          />
         </div>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        loading={isLoading}
-        rowKey="id"
-      />
+      <div className="p-4">
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={isLoading}
+          rowKey="id"
+          pagination={{ position: ["bottomCenter"] }}
+        />
+      </div>
       <Modal
         title={isEditMode ? "Editar Materia" : "Agregar Materia"}
         visible={isModalVisible}
@@ -164,10 +194,9 @@ const Materias = () => {
           className="mb-2"
         />
       </Modal>
-    </div>
+    </motion.div>
   );
 };
-
 const Grupos = () => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -219,6 +248,7 @@ const Grupos = () => {
       okType: "danger",
       cancelText: "No",
       onOk: () => handleDelete(id),
+      centered: true,
     });
   };
 
@@ -265,14 +295,22 @@ const Grupos = () => {
       title: "Acciones",
       key: "actions",
       render: (_, record) => (
-        <div className="flex space-x-2">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
-          <Button
-            icon={<DeleteOutlined />}
+        <div className="flex justify-center space-x-2">
+          <button
+            className="text-blue-500 border border-blue-500 rounded px-2 py-1 transition duration-500 transform hover:bg-blue-500 hover:text-white"
+            onClick={() => handleEdit(record)}
+          >
+            <EditOutlined />
+          </button>
+          <button
+            className="text-red-500 border border-red-500 rounded px-2 py-1 transition duration-500 transform hover:bg-red-500 hover:text-white"
             onClick={() => handleDeleteConfirm(record.id)}
-          />
+          >
+            <DeleteOutlined />
+          </button>
         </div>
       ),
+      width: 150,
     },
   ];
 
@@ -280,26 +318,31 @@ const Grupos = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Administrar Grupos</h1>
-        <div className="flex space-x-4">
+        <div className="flex space-x-2">
           <Input
             placeholder="Buscar grupos..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onPressEnter={handleSearch}
-            className="w-64"
+            className="w-64 h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 focus:scale-105 focus:shadow-lg"
           />
-          <Button icon={<SearchOutlined />} onClick={handleSearch} />
-          <Button icon={<PlusOutlined />} onClick={handleAdd}>
-            Agregar Grupo
-          </Button>
+          <StyledButton icon={<SearchOutlined />} onClick={handleSearch} />
+          <StyledButton
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            label="Agregar Grupo"
+          />
         </div>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        loading={isLoading}
-        rowKey="id"
-      />
+      <div className="p-4">
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={isLoading}
+          rowKey="id"
+          pagination={{ position: ["bottomCenter"] }} // Centra la paginación
+        />
+      </div>
       <Modal
         title={isEditMode ? "Editar Grupo" : "Agregar Grupo"}
         visible={isModalVisible}
@@ -374,6 +417,7 @@ const Docentes = () => {
       okType: "danger",
       cancelText: "No",
       onOk: () => handleDelete(id),
+      centered: true,
     });
   };
 
@@ -420,14 +464,22 @@ const Docentes = () => {
       title: "Acciones",
       key: "actions",
       render: (_, record) => (
-        <div className="flex space-x-2">
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
-          <Button
-            icon={<DeleteOutlined />}
+        <div className="flex justify-center space-x-2">
+          <button
+            className="text-blue-500 border border-blue-500 rounded px-2 py-1 transition duration-500 transform hover:bg-blue-500 hover:text-white"
+            onClick={() => handleEdit(record)}
+          >
+            <EditOutlined />
+          </button>
+          <button
+            className="text-red-500 border border-red-500 rounded px-2 py-1 transition duration-500 transform hover:bg-red-500 hover:text-white"
             onClick={() => handleDeleteConfirm(record.id)}
-          />
+          >
+            <DeleteOutlined />
+          </button>
         </div>
       ),
+      width: 150,
     },
   ];
 
@@ -435,26 +487,31 @@ const Docentes = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Administrar Docentes</h1>
-        <div className="flex space-x-4">
+        <div className="flex space-x-2">
           <Input
             placeholder="Buscar docentes..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onPressEnter={handleSearch}
-            className="w-64"
+            className="w-64 h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 focus:scale-105 focus:shadow-lg"
           />
-          <Button icon={<SearchOutlined />} onClick={handleSearch} />
-          <Button icon={<PlusOutlined />} onClick={handleAdd}>
-            Agregar Docente
-          </Button>
+          <StyledButton icon={<SearchOutlined />} onClick={handleSearch} />
+          <StyledButton
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            label="Agregar Docente"
+          />
         </div>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        loading={isLoading}
-        rowKey="id"
-      />
+      <div className="p-4">
+        <Table
+          columns={columns}
+          dataSource={data}
+          loading={isLoading}
+          rowKey="id"
+          pagination={{ position: ["bottomCenter"] }} // Centra la paginación
+        />
+      </div>
       <Modal
         title={isEditMode ? "Editar Docente" : "Agregar Docente"}
         visible={isModalVisible}
@@ -478,6 +535,15 @@ const Docentes = () => {
   );
 };
 
+const ButtonOption = ({ label, onClick, width }) => (
+  <button
+    className={`flex items-center justify-center ${width} h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 hover:scale-105 hover:bg-[#0B192C] hover:text-white hover:shadow-lg`}
+    onClick={onClick}
+  >
+    {label}
+  </button>
+);
+
 const SettingsContent = () => {
   const [selectedOption, setSelectedOption] = useState("Materias");
 
@@ -495,30 +561,34 @@ const SettingsContent = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Configuración</h1>
-      <div className="mb-6">
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded mr-2 hover:bg-blue-700"
-          onClick={() => setSelectedOption("Materias")}
-        >
-          Materias
-        </button>
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded mr-2 hover:bg-blue-700"
-          onClick={() => setSelectedOption("Grupos")}
-        >
-          Grupos
-        </button>
-        <button
-          className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700"
-          onClick={() => setSelectedOption("Docentes")}
-        >
-          Docentes
-        </button>
+    <motion.div
+      className="p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Configuración</h1>
+        <div className="flex space-x-2">
+          <ButtonOption
+            label="Materias"
+            onClick={() => setSelectedOption("Materias")}
+            width="w-32"
+          />
+          <ButtonOption
+            label="Grupos"
+            onClick={() => setSelectedOption("Grupos")}
+            width="w-32"
+          />
+          <ButtonOption
+            label="Docentes"
+            onClick={() => setSelectedOption("Docentes")}
+            width="w-32"
+          />
+        </div>
       </div>
-      <div className="border p-4 rounded bg-gray-100">{renderContent()}</div>
-    </div>
+      <div className="p-4">{renderContent()}</div>
+    </motion.div>
   );
 };
 

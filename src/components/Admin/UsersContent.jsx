@@ -4,9 +4,24 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
+  EyeOutlined,
+  EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
-import { Table, notification, Modal, Select } from "antd";
+import { Table, notification, Modal, Select, Spin } from "antd";
+import { debounce } from "lodash";
+import { motion } from "framer-motion";
+import "./UsersContent.css";
+
+const StyledButton = ({ icon, label, onClick }) => (
+  <button
+    className="flex items-center justify-center h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 hover:scale-105 hover:bg-[#0B192C] hover:text-white hover:shadow-lg"
+    onClick={onClick}
+  >
+    {icon}
+    {label && <span className="ml-2">{label}</span>}
+  </button>
+);
 
 const UsersContent = () => {
   const [users, setUsers] = useState([]);
@@ -23,6 +38,8 @@ const UsersContent = () => {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -32,7 +49,7 @@ const UsersContent = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, searchText]);
 
   const fetchUsers = async () => {
     setIsLoading(true);
@@ -55,18 +72,12 @@ const UsersContent = () => {
     setIsLoading(false);
   };
 
-  const handleSearch = () => {
-    fetchUsers();
-  };
+  const handleSearch = debounce((value) => {
+    setSearchText(value);
+  }, 300);
 
   const handleSearchInputChange = (e) => {
-    setSearchText(e.target.value);
-  };
-
-  const handleSearchKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
+    handleSearch(e.target.value);
   };
 
   const handleAdd = () => {
@@ -100,6 +111,7 @@ const UsersContent = () => {
       okType: "danger",
       cancelText: "No",
       onOk: () => handleDelete(id),
+      centered: true,
     });
   };
 
@@ -117,6 +129,7 @@ const UsersContent = () => {
   };
 
   const handleSave = async () => {
+    setIsSaving(true);
     try {
       const payload = {
         firstName: currentUser.first_name,
@@ -146,6 +159,7 @@ const UsersContent = () => {
       console.error("Error al guardar usuario:", error);
       showNotification("error", "Error al guardar usuario");
     }
+    setIsSaving(false);
   };
 
   const showNotification = (type, message) => {
@@ -207,33 +221,30 @@ const UsersContent = () => {
   ];
 
   return (
-    <div className="p-8">
+    <motion.div
+      className="p-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-bold">Administrar Usuarios</h1>
-        <div className="flex space-x-4">
+        <div className="flex space-x-2">
           <div className="flex space-x-2">
             <input
               type="text"
               placeholder="Buscar usuarios..."
               value={searchText}
               onChange={handleSearchInputChange}
-              onKeyPress={handleSearchKeyPress}
-              className="p-2 border border-gray-300 rounded-lg w-64"
+              className="w-64 h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 focus:scale-105 focus:shadow-lg"
             />
-            <button
-              className="px-4 py-2 border rounded-lg text-sm text-black"
-              onClick={handleSearch}
-            >
-              <SearchOutlined />
-            </button>
+            <StyledButton icon={<SearchOutlined />} onClick={handleSearch} />
           </div>
-          <button
-            className="px-4 py-2 border rounded-lg text-sm text-black"
+          <StyledButton
+            icon={<PlusOutlined />}
             onClick={handleAdd}
-          >
-            <PlusOutlined />
-            <span className="ml-1">Agregar Usuario</span>
-          </button>
+            label="Agregar Usuario"
+          />
         </div>
       </div>
       <Table
@@ -267,7 +278,12 @@ const UsersContent = () => {
         </Select>
       </Modal>
       {isModalVisible && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+        <motion.div
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="bg-white p-6 rounded-lg w-1/2">
             <h2 className="text-xl mb-4">
               {isEditMode ? "Editar Usuario" : "Agregar Usuario"}
@@ -328,15 +344,27 @@ const UsersContent = () => {
             {!isEditMode && (
               <div className="mb-2">
                 <label className="block mb-1">Password</label>
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={currentUser.password || ""}
-                  onChange={(e) =>
-                    setCurrentUser({ ...currentUser, password: e.target.value })
-                  }
-                  className="w-full p-2 border rounded"
-                />
+                <div className="relative flex items-center">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={currentUser.password || ""}
+                    onChange={(e) =>
+                      setCurrentUser({
+                        ...currentUser,
+                        password: e.target.value,
+                      })
+                    }
+                    className="w-full p-2 pr-10 border rounded"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeInvisibleOutlined /> : <EyeOutlined />}
+                  </button>
+                </div>
               </div>
             )}
             <div className="mb-4">
@@ -366,14 +394,25 @@ const UsersContent = () => {
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded"
                 onClick={handleSave}
+                disabled={isSaving}
               >
-                Guardar
+                {isSaving ? <Spin /> : "Guardar"}
               </button>
             </div>
           </div>
-        </div>
+        </motion.div>
       )}
-    </div>
+      {isSaving && (
+        <motion.div
+          className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="loader-1"></div>
+        </motion.div>
+      )}
+    </motion.div>
   );
 };
 

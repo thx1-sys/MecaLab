@@ -84,3 +84,7 @@ input[type="time"]::-webkit-outer-spin-button {
 input[type="time"] {
   -moz-appearance: textfield;
 }
+
+.color-footer {
+  background: linear-gradient(to bottom, #5c1b33, #4e142a 50%, #3f0e20);
+}

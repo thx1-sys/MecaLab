@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import MecaLabIcon from "../../components/svg/MecaLabIconDark";
 import Robot from "../../assets/Img/Robot.webp";
 
@@ -40,18 +41,22 @@ const MainContent = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2, duration: 0.5 }}
         >
-          <button className="mt-4 text-base lg:text-xl py-2 hover:px-4 rounded-lg underline text-white hover:bg-white hover:text-black hover:scale-105 transform transition-all duration-500 ease-in-out btn-shadow-white hover:no-underline">
-            Realiza tu primera solicitud ahora
-          </button>
+          <Link to="/student-home">
+            <button className="mt-4 text-base lg:text-xl py-2 hover:px-4 rounded-lg underline text-white hover:bg-white hover:text-black hover:scale-105 transform transition-all duration-500 ease-in-out btn-shadow-white hover:no-underline">
+              Realiza tu primera solicitud ahora
+            </button>
+          </Link>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2.5, duration: 0.5 }}
         >
-          <button className="mt-4 border text-base lg:text-xl text-white px-4 py-2 rounded-lg hover:bg-white hover:text-black hover:scale-105 transform transition duration-500 btn-shadow-white">
-            Más información
-          </button>
+          <Link to="/inf">
+            <button className="mt-4 border text-base lg:text-xl text-white px-4 py-2 rounded-lg hover:bg-white hover:text-black hover:scale-105 transform transition duration-500 btn-shadow-white">
+              Más información
+            </button>
+          </Link>
         </motion.div>
       </div>
 

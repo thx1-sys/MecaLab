@@ -29,6 +29,9 @@ const RequestsContent = () => {
     group: "",
     loan_type: "",
     request_status: 0,
+    start_time: null,
+    end_time: null,
+    materials: [],
   });
   const [isLoading, setIsLoading] = useState(true);
   const [pagination, setPagination] = useState({
@@ -50,7 +53,7 @@ const RequestsContent = () => {
       }
 
       const response = await axios.get(
-        `${import.meta.env.VITE_HOST_EXPRESS}/api/requests`,
+        `${import.meta.env.VITE_HOST_EXPRESS}/api/all-requests-view`,
         {
           params: {
             search: searchText,
@@ -307,148 +310,32 @@ const RequestsContent = () => {
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
+        centered
       >
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-gray-700">Nombre Completo:</label>
-            <input
-              type="text"
-              value={currentRequest.full_name}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
+        {currentRequest.loan_type === "Material" ? (
+          <div className="text-center">
+            <h2 className="text-lg font-bold mb-4">Materiales</h2>
+            <ul>
+              {currentRequest.materials.map((material) => (
+                <li key={material.material_id}>
+                  {material.material_name} - Cantidad: {material.quantity}
+                </li>
+              ))}
+            </ul>
           </div>
-          <div>
-            <label className="block text-gray-700">Correo Institucional:</label>
-            <input
-              type="email"
-              value={currentRequest.institutional_email}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
+        ) : (
+          <div className="text-center">
+            <h2 className="text-lg font-bold mb-4">Detalles de la Máquina</h2>
+            <p>
+              <strong>Hora de Inicio:</strong>{" "}
+              {formatDate(currentRequest.start_time)}
+            </p>
+            <p>
+              <strong>Hora de Fin:</strong>{" "}
+              {formatDate(currentRequest.end_time)}
+            </p>
           </div>
-          <div>
-            <label className="block text-gray-700">Teléfono:</label>
-            <input
-              type="text"
-              value={currentRequest.phone_number}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Carrera:</label>
-            <input
-              type="text"
-              value={currentRequest.career}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Semestre:</label>
-            <input
-              type="text"
-              value={currentRequest.semester}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Número de Control:</label>
-            <input
-              type="text"
-              value={currentRequest.student_id}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Fecha de Solicitud:</label>
-            <input
-              type="text"
-              value={formatDate(currentRequest.request_date)}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Fecha de Devolución:</label>
-            <input
-              type="text"
-              value={formatDate(currentRequest.expected_return_date)}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">ID del Material:</label>
-            <input
-              type="text"
-              value={currentRequest.material_id}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">
-              Cantidad del Material:
-            </label>
-            <input
-              type="number"
-              value={currentRequest.material_quantity}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">
-              Razón de la Solicitud:
-            </label>
-            <input
-              type="text"
-              value={currentRequest.request_reason}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Asignatura:</label>
-            <input
-              type="text"
-              value={currentRequest.subject}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Profesor:</label>
-            <input
-              type="text"
-              value={currentRequest.teacher}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Grupo:</label>
-            <input
-              type="text"
-              value={currentRequest.group}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700">Tipo de Préstamo:</label>
-            <input
-              type="text"
-              value={currentRequest.loan_type}
-              readOnly
-              className="w-full p-2 mb-4 border rounded-lg"
-            />
-          </div>
-        </div>
+        )}
       </Modal>
       <Modal
         title="Actualizar Estado de Solicitud"
