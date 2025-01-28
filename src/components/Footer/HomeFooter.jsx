@@ -48,7 +48,7 @@ const HomeFooter = () => {
             <div className="flex items-center justify-center lg:justify-end">
               <Link
                 to="/student-home"
-                className="flex items-center transform transition duration-500 hover:scale-105"
+                className="flex items-center"
                 onClick={() => window.location.reload()}
               >
                 <MecaLabIcon color="white" width="42" height="42" />

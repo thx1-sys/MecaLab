@@ -1,12 +1,12 @@
 import React from "react";
-import HeaderLogin from "../components/Header/HeaderStudentHome";
+import HeaderInstructorHome from "../components/Header/HeaderInstructorHome";
 import FooterStudent from "../components/Footer/FooterStudent";
 
-function MainLayoutSutudent({ children }) {
+function MainLayoutSutudentInstructor({ children }) {
   return (
     <div className="w-screen">
       <div className="min-h-screen w-screen flex flex-col">
-        <HeaderLogin />
+        <HeaderInstructorHome />
         <main className="flex items-center justify-center">{children}</main>
         <FooterStudent />
       </div>
@@ -14,4 +14,4 @@ function MainLayoutSutudent({ children }) {
   );
 }
 
-export default MainLayoutSutudent;
+export default MainLayoutSutudentInstructor;

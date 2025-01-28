@@ -61,8 +61,10 @@ function LoginForm({
         if (response.status !== 200) return;
         const userType = response.data.user.user_type;
         console.log(userType);
-        if (userType === 1 || userType === 2) {
+        if (userType === 1) {
           navigate("/student-home");
+        } else if (userType === 2) {
+          navigate("/instructor-home");
         } else if (userType === 3) {
           navigate("/dashboardadmin");
         } else {
@@ -278,7 +280,11 @@ function LoginForm({
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <img src={Machine} alt="Máquina del laboratorio" className="h-full" />
+          <img
+            src={Machine}
+            alt="Máquina del laboratorio"
+            className="h-full w-full object-cover"
+          />
         </motion.div>
       </motion.div>
 

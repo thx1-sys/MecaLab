@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import MainLogin from "../components/Main/MainStudentHome";
-import MainLayout from "../layouts/MainLayoutSutudent";
-import ContainerBG from "../components/Container/ContainerBG";
+import MainLayout from "../layouts/MainLayoutSutudentInstructor";
+import ContainerBG from "../components/Container/ContainerBGRED";
 
-function StudentHome() {
+function InstructorPage() {
   return (
     <div
       className="h-screen overflow-y-auto overflow-x-hidden custom-scrollbar-home"
@@ -19,4 +19,4 @@ function StudentHome() {
   );
 }
 
-export default StudentHome;
+export default InstructorPage;

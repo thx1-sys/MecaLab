@@ -1,10 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 function ContainerHome() {
-  const containerRef = useRef(null);
-
   useEffect(() => {
-    const shapesContainer = containerRef.current.querySelector(".shapes-red");
+    const shapesContainer = document.querySelector(".shapes-red");
     shapesContainer.innerHTML = ""; // Limpiar el contenedor de formas
 
     const numberOfShapes = Math.floor(Math.random() * 5) + 3; // Número aleatorio entre 3 y 7
@@ -30,10 +28,8 @@ function ContainerHome() {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-full h-full">
-      <div className="absolute inset-0 w-full h-full -z-50 bg-[#360e1d]">
-        <div className="shapes-red"></div>
-      </div>
+    <div className="absolute inset-0 h-full w-full -z-50 bg-[#360e1d]">
+      <div className="shapes-red"></div>
     </div>
   );
 }

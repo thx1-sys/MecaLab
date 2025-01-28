@@ -357,19 +357,43 @@ const StepTwo = ({
           </div>
         )}
 
-        <div className="flex justify-center space-x-4 mt-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center space-x-4 mt-4"
+        >
           <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 2.6 }}
             className="py-2 px-4 btn-change-blue bg-transparent text-white border rounded-lg hover:bg-blue-500 hover:border-blue-500 hover:text-white transition duration-500 flex items-center"
             type="button"
             onClick={addMaterialToCart}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 3 }}
           >
             <span className="mr-2">Agregar al carrito</span>
             <PlusIcon className="w-6 h-6" />
           </motion.button>
-        </div>
+        </motion.div>
+        {/* Solo visible en dispositivos móviles */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 2.8 }}
+          className="block sm:hidden flex justify-center mt-4"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className={`py-2 px-8 btn-change-blue bg-transparent text-white border rounded-lg hover:bg-blue-500 hover:border-blue-500 hover:text-white transition duration-500 flex items-center ${
+              shakeCart ? "animate-shake text-red-500" : ""
+            }`}
+            onClick={handleOpenCartModal}
+            type="button"
+          >
+            Ver Carrito
+            <ShoppingCartIcon className="w-6 h-6 ml-4 transition-colors duration-300" />
+          </motion.button>
+        </motion.div>
 
         <div className="flex justify-center space-x-4 mt-4">
           <motion.button
@@ -453,7 +477,7 @@ const StepTwo = ({
       </Modal>
 
       <div
-        className={`fixed bottom-4 right-4 p-4 cursor-pointer opacity-60 hover:opacity-100 hover:scale-105 transform transition duration-300 ${
+        className={`hidden md:block fixed bottom-4 right-4 p-4 cursor-pointer opacity-60 hover:opacity-100 hover:scale-105 transform transition duration-300 ${
           shakeCart ? "animate-shake text-red-500" : ""
         }`}
         onClick={handleOpenCartModal}

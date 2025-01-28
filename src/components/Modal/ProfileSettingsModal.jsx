@@ -85,11 +85,6 @@ const ProfileSettingsModal = ({
       onSave();
       setShowAlert(true); // Mostrar alerta
       onClose(); // Cerrar el modal
-
-      // Recargar la página después de 5 segundos
-      setTimeout(() => {
-        window.location.reload();
-      }, 5000);
     } catch (error) {
       console.error("Error updating name and last name:", error);
     }

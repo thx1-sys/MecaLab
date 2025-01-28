@@ -12,6 +12,7 @@ import LazyLoaderRed from "./components/Loader/LazyLoaderRed";
 const Signup = lazy(() => import("./pages/Signup"));
 const Login = lazy(() => import("./pages/Login"));
 const StudentHome = lazy(() => import("./pages/StudentHome"));
+const InstructorPage = lazy(() => import("./pages/InstructorPage"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 
@@ -59,6 +60,14 @@ function App() {
               element={
                 <PrivateRoute>
                   <StudentHome onLoad={handleImageLoad} />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/instructor-home"
+              element={
+                <PrivateRoute>
+                  <InstructorPage onLoad={handleImageLoad} />
                 </PrivateRoute>
               }
             />

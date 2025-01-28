@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import useFetchImage from "../../hooks/useFetchImage";
 
 const EquipmentCard = ({ title, imageName }) => {
-  const { imageUrl, error } = useFetchImage(imageName);
-  const finalImageUrl = error ? "https://via.placeholder.com/150" : imageUrl;
+  const imageUrl = `/img/${imageName}`;
+  const finalImageUrl = imageUrl || "https://via.placeholder.com/150";
 
   return (
     <div className="relative bg-transparent p-1 rounded-lg shadow-sm overflow-hidden transform transition duration-500 hover:scale-105 hover:shadow-gray-lg group">

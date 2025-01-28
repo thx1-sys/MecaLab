@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HeaderITD from "../components/Header/HeaderITD";
 import ContainerHome from "../components/Container/ContainerBG";
 import HomeMenu from "../components/Menu/HomeMenu";
@@ -19,6 +19,10 @@ const ImageCard = ({ title, description, image }) => (
 );
 
 const HomePage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="h-screen overflow-y-auto overflow-x-hidden custom-scrollbar-home">
       <HeaderITD />
@@ -31,8 +35,8 @@ const HomePage = () => {
         <div className="h-[5vh] w-full text-center animate-slideUpFadeIn text-white opacity-60">
           Departamento de Metal-Mecanica del ITD
         </div>
+        <ImageSection image={image} />
         <div>
-          <ImageSection image={image} />
           <InfoPage />
           <EquipmentGallery />
         </div>

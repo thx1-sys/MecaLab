@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import LazyLoaderBlue from "./components/Loader/LazyLoaderBlue";
 
 const PrivateRoute = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -35,7 +36,11 @@ const PrivateRoute = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <LazyLoaderBlue />
+      </div>
+    );
   }
 
   return isAuthenticated ? children : <Navigate to="/login" />;

@@ -8,7 +8,7 @@ const FeatureCard = ({ title, description, imageUrl }) => {
           <img
             src={imageUrl}
             alt={title}
-            className="w-full h-full object-contain rounded-t-lg transition duration-500"
+            className="w-full h-full object-contain rounded-t-lg filter grayscale transition duration-500 group-hover:filter-none"
           />
         </div>
       )}
