@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import PhoneIcon from "../Svg/PhoneIcon";
-import MailIcon from "../Svg/MailIcon";
-import MecaLabIcon from "../Svg/MecaLabIconDark";
+import PhoneIcon from "../svg/PhoneIcon";
+import MailIcon from "../svg/MailIcon";
+import MecaLabIcon from "../svg/MecaLabIconDark";
 
 const HomeFooter = () => {
   return (

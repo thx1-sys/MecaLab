@@ -7,7 +7,7 @@ import MecaLabIcon from "../svg/MecaLabIconDark";
 import InputField from "../Input/InputField";
 import PasswordInputField from "../Input/PasswordInputField";
 import Machine from "../../assets/Img/Machine_1.webp";
-import ImageITD from "../../assets/Img/ITD_Logo.PNG";
+import ImageITD from "../../assets/Img/ITD_Logo.png";
 import Alert from "../Alert/Alert";
 
 function LoginForm({

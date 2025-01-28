@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import MecaLabIcon from "../svg/MecaLabIconDark";
 import InputField from "../Input/InputField";
 import PasswordInputField from "../Input/PasswordInputField";
-import ImageITD from "../../assets/Img/ITD_Logo.PNG";
+import ImageITD from "../../assets/Img/ITD_Logo.png";
 import IconSquareCheck from "./Icon/IconSquareCheck";
 import Loading from "../Loader/Loading";
 import Alert from "../Alert/Alert";

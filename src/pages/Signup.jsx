@@ -7,7 +7,7 @@ import InputField from "../components/Input/InputField";
 import PasswordInputField from "../components/Input/PasswordInputField";
 import Machine from "../assets/Img/Machine_2.webp";
 import MecaLabIcon from "../components/svg/MecaLabIconDark";
-import ImageITD from "../assets/Img/ITD_Logo.PNG";
+import ImageITD from "../assets/Img/ITD_Logo.png";
 import IconSquareCheck from "../components/svg/IconSquareCheck";
 import Loading from "../components/Loader/Loading";
 import Alert from "../components/Alert/Alert";
