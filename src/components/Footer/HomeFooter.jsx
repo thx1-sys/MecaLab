@@ -63,17 +63,17 @@ const HomeFooter = () => {
         <div className="flex flex-wrap justify-center items-center space-x-4 mt-8">
           <div className="flex justify-center items-center space-x-4">
             <img
-              src="../../src/assets/images/Teg_log.png"
+              src="/img/Teg_log.png"
               alt="Logo del instituto tecnológico de México"
               className="w-20 h-20 object-contain"
             />
             <img
-              src="../../src/assets/images/Gob_log.png"
+              src="/img/Gob_log.png"
               alt="Logo del gobierno de México"
               className="w-20 h-20 object-contain"
             />
             <img
-              src="../../src/assets/images/LogoITD_1.png"
+              src="/img/LogoITD_1.png"
               alt="Logo del instituto tecnológico de Durango"
               className="w-20 h-20 object-contain"
             />
