@@ -102,7 +102,7 @@ const ReportContent = () => {
               <YAxis stroke="#333" tick={{ fontSize: 12, fill: "#333" }} />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="total" stroke="#000" />
+              <Line type="monotone" dataKey="total" stroke="#2A004E" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -119,7 +119,7 @@ const ReportContent = () => {
               <YAxis stroke="#333" tick={{ fontSize: 12, fill: "#333" }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="total" fill="#000" />
+              <Bar dataKey="total" fill="#F72C5B" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -138,7 +138,7 @@ const ReportContent = () => {
               <YAxis stroke="#333" tick={{ fontSize: 12, fill: "#333" }} />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="total" stroke="#000" />
+              <Line type="monotone" dataKey="total" stroke="#16C47F" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -157,22 +157,26 @@ const ReportContent = () => {
               <YAxis stroke="#333" tick={{ fontSize: 12, fill: "#333" }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="total" fill="#000" />
+              <Bar dataKey="total" fill="#4635B1" />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
       <div className="flex justify-end space-x-4 mt-8">
         <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          className="text-md w-48 h-16 rounded bg-blue-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
           onClick={() => handleDownloadReport("machines")}
         >
+          <span className="absolute bg-blue-600 w-48 h-48 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+          <span className="absolute bg-blue-800 w-48 h-48 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
           Descargar Reporte de Máquinas
         </button>
         <button
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+          className="text-md w-48 h-16 rounded bg-green-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
           onClick={() => handleDownloadReport("materials")}
         >
+          <span className="absolute bg-green-600 w-48 h-48 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+          <span className="absolute bg-green-800 w-48 h-48 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
           Descargar Reporte de Materiales
         </button>
       </div>

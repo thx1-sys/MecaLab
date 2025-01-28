@@ -104,7 +104,7 @@ const Sidebar = ({ isSidebarOpen, setActiveContent, activeContent }) => {
         ))}
         <div
           onClick={() => setActiveContent("home")}
-          className="absolute bottom-6 bg-blue-500 p-4 rounded-full shadow-lg transform transition-transform duration-500"
+          className="absolute bottom-6 bg-gradient-to-r from-[#0B192C] to-[#255392] p-4 rounded-full shadow-lg transform transition-transform duration-500 border-4"
         >
           <HomeIcon
             className={`w-8 h-8 ${

@@ -22,6 +22,9 @@ body {
   .custom-scrollbar-home::-webkit-scrollbar {
     width: 0;
   }
+  .custom-scrollbar-home-dahsboard::-webkit-scrollbar {
+    width: 0;
+  }
 }
 
 .custom-scrollbar-home-dahsboard {

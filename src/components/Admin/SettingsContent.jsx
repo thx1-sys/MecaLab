@@ -143,30 +143,42 @@ const Materias = () => {
 
   return (
     <motion.div
-      className=""
+      className=" md:p-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Administrar Materias</h1>
-        <div className="flex space-x-2">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">
+          Administrar Materias
+        </h1>
+        <div className="flex flex-wrap justify-center sm:justify-end space-x-2">
           <Input
             placeholder="Buscar materias..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onPressEnter={handleSearch}
-            className="w-64 h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 focus:scale-105 focus:shadow-lg"
+            className="w-full mb-4  sm:w-64 h-12 px-4 py-2 border-gray500 text-sm text-[#0B192C] border rounded-lg transform transition duration-500 focus:scale-105 focus:shadow-lg"
           />
-          <StyledButton icon={<SearchOutlined />} onClick={handleSearch} />
-          <StyledButton
-            icon={<PlusOutlined />}
+          <button
+            className="text-xl w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
+            onClick={handleSearch}
+          >
+            <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+            <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+            <SearchOutlined />
+          </button>
+          <button
+            className="text-sm w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
             onClick={handleAdd}
-            label="Agregar Materia"
-          />
+          >
+            <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+            <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+            <PlusOutlined />
+          </button>
         </div>
       </div>
-      <div className="p-4">
+      <div className="md:p-4">
         <Table
           columns={columns}
           dataSource={data}
@@ -197,6 +209,7 @@ const Materias = () => {
     </motion.div>
   );
 };
+
 const Grupos = () => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -315,32 +328,49 @@ const Grupos = () => {
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Administrar Grupos</h1>
-        <div className="flex space-x-2">
+    <motion.div
+      className=" md:p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">
+          Administrar Grupos
+        </h1>
+        <div className="flex flex-wrap justify-center sm:justify-end space-x-2">
           <Input
             placeholder="Buscar grupos..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onPressEnter={handleSearch}
-            className="w-64 h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 focus:scale-105 focus:shadow-lg"
+            className="w-full mb-4  sm:w-64 h-12 px-4 py-2 border-gray500 text-sm text-[#0B192C] border rounded-lg transform transition duration-500 focus:scale-105 focus:shadow-lg"
           />
-          <StyledButton icon={<SearchOutlined />} onClick={handleSearch} />
-          <StyledButton
-            icon={<PlusOutlined />}
+          <button
+            className="text-xl w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
+            onClick={handleSearch}
+          >
+            <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+            <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+            <SearchOutlined />
+          </button>
+          <button
+            className="text-xl w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
             onClick={handleAdd}
-            label="Agregar Grupo"
-          />
+          >
+            <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+            <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+            <PlusOutlined />
+          </button>
         </div>
       </div>
-      <div className="p-4">
+      <div className="">
         <Table
           columns={columns}
           dataSource={data}
           loading={isLoading}
           rowKey="id"
-          pagination={{ position: ["bottomCenter"] }} // Centra la paginación
+          pagination={{ position: ["bottomCenter"] }}
         />
       </div>
       <Modal
@@ -362,7 +392,7 @@ const Grupos = () => {
           className="mb-2"
         />
       </Modal>
-    </div>
+    </motion.div>
   );
 };
 
@@ -484,32 +514,49 @@ const Docentes = () => {
   ];
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Administrar Docentes</h1>
-        <div className="flex space-x-2">
+    <motion.div
+      className="md:p-6"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">
+          Administrar Docentes
+        </h1>
+        <div className="flex flex-wrap justify-center sm:justify-end space-x-2">
           <Input
             placeholder="Buscar docentes..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             onPressEnter={handleSearch}
-            className="w-64 h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 focus:scale-105 focus:shadow-lg"
+            className="w-full mb-4  sm:w-64 h-12 px-4 py-2 border-gray500 text-sm text-[#0B192C] border rounded-lg transform transition duration-500 focus:scale-105 focus:shadow-lg"
           />
-          <StyledButton icon={<SearchOutlined />} onClick={handleSearch} />
-          <StyledButton
-            icon={<PlusOutlined />}
+          <button
+            className="text-xl w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
+            onClick={handleSearch}
+          >
+            <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+            <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+            <SearchOutlined />
+          </button>
+          <button
+            className="text-xl w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
             onClick={handleAdd}
-            label="Agregar Docente"
-          />
+          >
+            <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+            <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+            <PlusOutlined />
+          </button>
         </div>
       </div>
-      <div className="p-4">
+      <div className="">
         <Table
           columns={columns}
           dataSource={data}
           loading={isLoading}
           rowKey="id"
-          pagination={{ position: ["bottomCenter"] }} // Centra la paginación
+          pagination={{ position: ["bottomCenter"] }}
         />
       </div>
       <Modal
@@ -531,15 +578,19 @@ const Docentes = () => {
           className="mb-2"
         />
       </Modal>
-    </div>
+    </motion.div>
   );
 };
 
-const ButtonOption = ({ label, onClick, width }) => (
+const ButtonOption = ({ label, onClick, width, isSelected }) => (
   <button
-    className={`flex items-center justify-center ${width} h-12 px-4 py-2 border-[#0B192C] text-sm text-[#0B192C] border rounded-xl transform transition duration-500 hover:scale-105 hover:bg-[#0B192C] hover:text-white hover:shadow-lg`}
+    className={`text-md md:text-xl ${width} h-12 rounded ${
+      isSelected ? "bg-blue-900" : "bg-blue-500"
+    } text-white relative overflow-hidden group z-10 hover:text-white duration-1000`}
     onClick={onClick}
   >
+    <span className="absolute bg-blue-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+    <span className="absolute bg-blue-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
     {label}
   </button>
 );
@@ -562,32 +613,59 @@ const SettingsContent = () => {
 
   return (
     <motion.div
-      className="p-6"
+      className="p-4 sm:p-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Configuración</h1>
-        <div className="flex space-x-2">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0">
+          Configuración
+        </h1>
+        <div className="flex flex-wrap justify-center sm:justify-end space-x-2">
           <ButtonOption
             label="Materias"
             onClick={() => setSelectedOption("Materias")}
-            width="w-32"
+            width="w-24 sm:w-32"
+            isSelected={selectedOption === "Materias"}
           />
           <ButtonOption
             label="Grupos"
             onClick={() => setSelectedOption("Grupos")}
-            width="w-32"
+            width="w-24 sm:w-32"
+            isSelected={selectedOption === "Grupos"}
           />
           <ButtonOption
             label="Docentes"
             onClick={() => setSelectedOption("Docentes")}
-            width="w-32"
+            width="w-24 sm:w-32"
+            isSelected={selectedOption === "Docentes"}
           />
         </div>
       </div>
-      <div className="p-4">{renderContent()}</div>
+      <div className="p-2 sm:p-4">{renderContent()}</div>
+      <div className="flex flex-col space-y-8 mt-6">
+        <h2 className="text-xl font-bold md:mb-4">Configuración General</h2>
+        <div className="flex items-center space-x-2 md:ml-12">
+          <label className="relative inline-block h-7 w-[48px] cursor-pointer rounded-full bg-gray-900 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-[#1976D2]">
+            <input
+              type="checkbox"
+              id="toggleRequests"
+              className="peer sr-only"
+            />
+            <span className="absolute inset-y-0 start-0 m-1 size-5 rounded-full bg-gray-300 ring-[5px] ring-inset ring-white transition-all peer-checked:start-7 bg-gray-900 peer-checked:w-2 peer-checked:bg-white peer-checked:ring-transparent"></span>
+          </label>
+          <span>Desactivar Solicitudes</span>
+        </div>
+        <div className="flex items-center space-x-2 md:ml-12">
+          <label className="relative inline-block h-7 w-[48px] cursor-pointer rounded-full bg-gray-900 transition [-webkit-tap-highlight-color:_transparent] has-[:checked]:bg-[#1976D2]">
+            <input type="checkbox" id="toggleSystem" className="peer sr-only" />
+            <span className="absolute inset-y-0 start-0 m-1 size-5 rounded-full bg-gray-300 ring-[5px] ring-inset ring-white transition-all peer-checked:start-7 bg-gray-900 peer-checked:w-2 peer-checked:bg-white peer-checked:ring-transparent"></span>
+          </label>
+          <span>Desactivar Inicio al Sistema</span>
+        </div>
+        <div className="bg-transparent w-full h-[10vh] md:hidden"></div>
+      </div>
     </motion.div>
   );
 };

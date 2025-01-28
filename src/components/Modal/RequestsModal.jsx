@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import Cookies from "js-cookie";
+import QRCode from "qrcode";
+import { Modal } from "antd";
 import "./RequestsModal.css";
 import CloseIcon from "../svg/CloseIcon";
 import MaterialsModal from "./MaterialsModal";
@@ -12,6 +14,8 @@ function RequestsModal({ onClose, show }) {
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
   const [showMaterialsModal, setShowMaterialsModal] = useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState("");
+  const [isQrModalVisible, setIsQrModalVisible] = useState(false);
 
   useEffect(() => {
     if (show) {
@@ -96,6 +100,9 @@ function RequestsModal({ onClose, show }) {
     setSelectedSolicitud(solicitud);
     if (solicitud.loan_type === "Material") {
       setSelectedMaterials(solicitud.materials || []);
+      if (solicitud.request_status === 1) {
+        generateQrCode(solicitud.request_id.toString());
+      }
     } else {
       setSelectedMaterials([]);
     }
@@ -104,6 +111,7 @@ function RequestsModal({ onClose, show }) {
   const handleCloseDetails = () => {
     setSelectedSolicitud(null);
     setSelectedMaterials([]);
+    setQrCodeUrl("");
   };
 
   const handleOpenMaterialsModal = () => {
@@ -112,6 +120,23 @@ function RequestsModal({ onClose, show }) {
 
   const handleCloseMaterialsModal = () => {
     setShowMaterialsModal(false);
+  };
+
+  const generateQrCode = async (text) => {
+    try {
+      const url = await QRCode.toDataURL(text);
+      setQrCodeUrl(url);
+    } catch (error) {
+      console.error("Error generating QR code:", error);
+    }
+  };
+
+  const handleOpenQrModal = () => {
+    setIsQrModalVisible(true);
+  };
+
+  const handleCloseQrModal = () => {
+    setIsQrModalVisible(false);
   };
 
   return (
@@ -333,19 +358,19 @@ function RequestsModal({ onClose, show }) {
                 </span>
               </p>
               {selectedSolicitud.loan_type === "Material" && (
-                <div className="flex justify-between">
+                <div className="flex flex-col space-y-4">
+                  <button
+                    className="w-full mt-4 md:mt-6 btn-change-blue py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
+                    onClick={handleOpenQrModal}
+                  >
+                    Ver QR
+                  </button>
                   <button
                     className="w-full mt-4 md:mt-6 btn-change-blue py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
                     onClick={handleOpenMaterialsModal}
                   >
                     Ver Materiales Solicitados
                   </button>
-                  {/* <button
-                    className="w-full mt-4 md:mt-6 btn-change-blue py-2 bg-transparent border border-white text-white rounded-lg hover:bg-blue-500 hover:border-blue-500 transition duration-500"
-                    onClick={handleCloseDetails}
-                  >
-                    Cerrar
-                  </button> */}
                 </div>
               )}
               {selectedSolicitud.loan_type === "Máquina" && (
@@ -374,6 +399,23 @@ function RequestsModal({ onClose, show }) {
         onClose={handleCloseMaterialsModal}
         materials={selectedMaterials}
       />
+
+      <Modal
+        title="QR Code"
+        visible={isQrModalVisible}
+        onCancel={handleCloseQrModal}
+        footer={null}
+        centered
+        width={800} // Adjust the width as needed
+      >
+        <div className="flex justify-center">
+          <img
+            src={qrCodeUrl}
+            alt="QR Code"
+            className="w-full h-auto max-w-lg"
+          />
+        </div>
+      </Modal>
     </AnimatePresence>
   );
 }

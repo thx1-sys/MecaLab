@@ -289,7 +289,9 @@ const MaterialsContent = () => {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold">Administrar Materiales</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">
+          Administrar Materiales
+        </h1>
         <div className="flex space-x-4">
           <div className="flex space-x-2">
             <div className="relative">
@@ -299,23 +301,26 @@ const MaterialsContent = () => {
                 value={searchText}
                 onChange={handleSearchInputChange}
                 onKeyPress={handleSearchKeyPress}
-                className="p-2 border-[#0B192C]/30 border rounded-lg text-black placeholder-gray-400 text-sm w-64"
+                className="w-full mb-4 sm:w-64 h-12 px-4 py-2 border-gray500 text-sm text-[#0B192C] border rounded-lg transform transition duration-500 focus:scale-105 focus:shadow-lg"
               />
             </div>
             <button
-              className="px-4 py-2 border-[#0B192C] text-xs text-[#0B192C] border rounded-xl transform transition duration-500 hover:scale-105 hover:bg-[#0B192C] hover:text-white hover:shadow-lg space-x-2"
+              className="text-xl w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
               onClick={handleSearch}
             >
+              <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+              <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
               <SearchOutlined />
             </button>
+            <button
+              className="text-xl w-32 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
+              onClick={handleAdd}
+            >
+              <span className="absolute bg-emerald-600 w-36 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
+              <span className="absolute bg-emerald-800 w-36 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
+              <PlusOutlined />
+            </button>
           </div>
-          <button
-            className="px-4 py-2 border-[#0B192C] text-xs text-[#0B192C] border rounded-xl transform transition duration-500 hover:scale-105 hover:bg-[#0B192C] hover:text-white hover:shadow-lg space-x-2"
-            onClick={handleAdd}
-          >
-            <PlusOutlined />
-            <span>Agregar Material</span>
-          </button>
         </div>
       </div>
       <Table

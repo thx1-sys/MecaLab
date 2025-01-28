@@ -39,7 +39,7 @@ const SidebarMobile = ({ setActiveContent, activeContent }) => {
       ))}
       <div
         onClick={() => setActiveContent("home")}
-        className="absolute bottom-6 bg-[#255392] p-4 rounded-full shadow-lg transform transition-transform duration-500"
+        className="absolute bottom-6 bg-[#0B192C] p-4 rounded-full shadow-lg transform transition-transform duration-500"
       >
         <HomeIcon
           className={`w-8 h-8 ${
